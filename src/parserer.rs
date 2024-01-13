@@ -1,3 +1,4 @@
+//! parserer module parses the user input with clap crate
 use clap::{Parser, ValueEnum};
 
 

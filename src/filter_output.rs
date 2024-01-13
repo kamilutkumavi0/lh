@@ -1,6 +1,7 @@
+//! fiter_output filters and argumant with user inputs work in progress planing to filter can filter by time, file type etc.
 use crate::parserer::{Args, PType};
 use crate::file_reader::Element;
-
+/// Takes parsed argumants end element vector filter files with argumant which user gives and return fitered element vector.
 pub fn filter(parsed_args: &Args, files: Vec<Element>) -> Vec<Element> {
 	let mut output: Vec<Element> = Vec::new();
 	for file in files{

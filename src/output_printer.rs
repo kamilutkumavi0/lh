@@ -1,3 +1,4 @@
+//! Prints output with handsomely
 use crate::parserer::Args;
 use crate::file_reader::Element;
 use colored::Colorize;

@@ -1,6 +1,12 @@
+//! file_reader module is reads path and metadatas of diroctory.
+//! and make every path as a Elemen struct for other elements can filter with it so user can see filtered output
+
 use std::fs::{self, ReadDir, DirEntry};
 use std::collections::HashMap;
 use crate::tomlread::FileTypeToml;
+
+/// Element struct collect name of the dir as String, information about hiden, file, dir as bool and
+/// file_type as a Option FileTypeToml which is going to configure bye lh.toml in the future.   
 #[derive(Debug)]
 pub struct Element{
 	pub name: String,
@@ -14,6 +20,7 @@ pub struct Element{
 }
 
 impl Element{
+	/// Takes a Dir Entry and transform as a element struct
 	fn from_dir_entry(file: DirEntry, initial_path: &str, conf_hash: &HashMap<String, FileTypeToml>) -> Self{
 		let path = file.path();
 		let name = &path.to_str().unwrap()[initial_path.len()..];
@@ -50,7 +57,7 @@ impl Element{
 		let name = name.to_string();
 		Self{ name, is_hiden, is_file, is_dir, file_type}
 	}
-
+	/// Takes a ReadDir argumant and send the every DirEntry in from_read_dir function and collect every element in vector
 	fn from_read_dir(files: ReadDir, initial_path: &str, conf_hash: HashMap<String, FileTypeToml>) -> Vec<Element>{
 		let mut element_vec: Vec<Element> = Vec::new();
 		for file in files {
@@ -65,6 +72,7 @@ impl Element{
 	}
 }
 
+/// Takes conf_hash for following the file type and returns vector of elements
 pub fn get_files(conf_hash: HashMap<String, FileTypeToml>) -> Vec<Element> {
 	let initial_path = "./".to_string();
 	let a: Option<ReadDir> = match fs::read_dir(&initial_path){
