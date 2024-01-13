@@ -24,7 +24,7 @@ pub enum ColorFormat{
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct FileTypeToml{
-    name: String,
+    // name: String,
     pub symbol: String,
     pub color: ColorFormat,
     track: Vec<String>,
@@ -89,7 +89,7 @@ r#"
 
 "#;
 		
-    let config = toml::from_str(default).unwrap();
+    let config = from_str(default).unwrap();
 	let conf_hash = track_hash(&config);
 	conf_hash
 }

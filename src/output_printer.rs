@@ -1,8 +1,8 @@
-use crate::parserer::{Args, OType};
+use crate::parserer::Args;
 use crate::file_reader::Element;
 use colored::Colorize;
 use crate::tomlread::ColorFormat;
-pub fn output_print(parsed_args: &Args, 
+pub fn output_print(_parsed_args: &Args, 
 					filtered_files: Vec<Element>){
 	for i in filtered_files{
 		match i.file_type.clone().unwrap().color{
