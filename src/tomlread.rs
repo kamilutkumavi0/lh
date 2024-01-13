@@ -90,6 +90,5 @@ r#"
 "#;
 		
     let config = from_str(default).unwrap();
-	let conf_hash = track_hash(&config);
-	conf_hash
+	track_hash(&config)
 }

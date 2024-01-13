@@ -38,8 +38,7 @@ pub fn filter(parsed_args: &Args, files: Vec<Element>) -> Vec<Element> {
 					},
 				}
 			}
-		} else {
-			if !(file.is_hiden){
+		} else if !(file.is_hiden){
 				match parsed_args.p_type {
 					PType::All => {
 						output.push(file);
@@ -55,7 +54,6 @@ pub fn filter(parsed_args: &Args, files: Vec<Element>) -> Vec<Element> {
 						}
 					},
 				}
-			}
 		}
 	}
 	output

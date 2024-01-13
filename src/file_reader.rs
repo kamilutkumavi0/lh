@@ -17,10 +17,7 @@ impl Element{
 	fn from_dir_entry(file: DirEntry, initial_path: &str, conf_hash: &HashMap<String, FileTypeToml>) -> Self{
 		let path = file.path();
 		let name = &path.to_str().unwrap()[initial_path.len()..];
-		let is_hiden = match &name.chars().nth(0).unwrap(){
-			'.' => true,
-			_ => false,
-		};
+		let is_hiden = matches!(&name.chars().nth(0).unwrap(), '.');
 		let metadata_of_file = file.metadata().unwrap();
 		let is_file = metadata_of_file.is_file();
 		let is_dir = metadata_of_file.is_dir();
@@ -31,7 +28,7 @@ impl Element{
 			Some(conf_hash.get(name).unwrap().clone())
 		} else if is_file {
 			let name_string = &name.to_string()[1..].to_string();
-			let num = name_string.find(".");
+			let num = name_string.find('.');
 			let name_string: String = match num {
 				Some(n) => {let mut temp = String::from("*");
 							temp.push_str(&name_string[n..]);
