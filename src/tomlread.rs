@@ -1,4 +1,5 @@
 //! reads user configiration for prints outpu handsomely
+mod default;
 use toml::from_str;
 use std::collections::HashMap;
 use serde_derive::Deserialize;
@@ -31,11 +32,13 @@ pub struct FileTypeToml{
     pub color: ColorFormat,
     track: Vec<String>,
 }
+
 /// All config of user in progress
 #[derive(Deserialize,Debug)]
 pub struct Config{
     pub file_type: Vec<FileTypeToml>,
 }
+
 ///tract conf to hash table for easy to use for filtering the output.
 fn track_hash(config: &Config) -> HashMap<String, FileTypeToml> {
 	let mut conf_hash: HashMap<String, FileTypeToml> = HashMap::new(); 
@@ -88,6 +91,128 @@ r#"
 		symbol = ""
 		color = "Blue"
 		track = ["*.toml"]
+
+		[[file_type]]
+		name = "c"
+		symbol = ""
+		color = "Blue"
+		track = ["*.c","*.h"]
+
+		[[file_type]]
+		name = "docker"
+		symbol = ""
+		color = "BrigthBlue"
+		track = ["Dockerfile"]
+
+		[[file_type]]
+		name = "go"
+		symbol = "󰟓"
+		color = "BrightBlue"
+		track = ["*.go"]
+
+		[[file_type]]
+		name = "haskel"
+		symbol = ""
+		color = "Magenta"
+		track = ["*.hs"]
+
+		[[file_type]]
+		name = "java"
+		symbol = ""
+		color = "Red"
+		track = ["*java"]
+
+		[[file_type]]
+		name = "julia"
+		symbol = ""
+		color = "Green"
+		track = ["*.jl"]
+
+		[[file_type]]
+		name = "kotlin"
+		symbol = ""
+		color = "Cyan"
+		track = ["*.kt", "*.kts"]
+
+		[[file_type]]
+		name = "lua"
+		symbol = ""
+		color = "Blue"
+		track = ["*.lua"]
+
+		[[file_type]]
+		name = "ocaml"
+		symbol = ""
+		color = "BrightRed"
+		track = ["*.opam"]
+
+		[[file_type]]
+		name = "perl"
+		symbol = ""
+		color = "BrightBlue"
+		track = ["*.pl"]
+
+		[[file_type]]
+		name = "php"
+		symbol = ""
+		color = "Blue"
+		track = ["*.php"]
+
+		[[file_type]]
+		name = "ruby"
+		symbol = ""
+		color = "Red"
+		track = ["*.rb"]
+		
+		[[file_type]]
+		name = "r"
+		symbol = ""
+		color = "Blue"
+		track = [".*R","*.Rd","*.Rmd", "*.Rproj", "*.Rxs"]
+
+
+		[[file_type]]
+		name = "swift"
+		symbol = ""
+		color = "BrightRed"
+		track = ["*.swift"]
+
+		[[file_type]]
+		name = "zig"
+		symbol = ""
+		color = "Yellow"
+		track = ["*.zig"]
+
+		[[file_type]]
+		name = "javascript"
+		symbol = ""
+		color = "Yellow"
+		track = ["*.js"]
+
+		[[file_type]]
+		name = "html"
+		symbol = ""
+		color = "BrightCyan"
+		track = ["*.html"]
+
+		[[file_type]]
+		name = "css"
+		symbol = ""
+		color = "BrightYellow"
+		track = ["*.css"]
+
+		[[file_type]]
+		name = "C++"
+		symbol = ""
+		color = "Blue"
+		track = ["*.cpp"]
+
+		[[file_type]]
+		name = "C#"
+		symbol = "󰌛"
+		color = "BrightYellow"
+		track = ["*.cs"]
+
 
 "#;
 		

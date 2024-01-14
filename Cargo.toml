@@ -8,6 +8,7 @@ readme = "README.md"
 repository = "https://github.com/kamilutkumavi0/lh"
 license = "MIT"
 license-file = "LICENSE" 
+documentation = "https://docs.rs/lh/"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
