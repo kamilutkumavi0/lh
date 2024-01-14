@@ -1,5 +1,4 @@
 //! reads user configiration for prints outpu handsomely
-mod default;
 use toml::from_str;
 use std::collections::HashMap;
 use serde_derive::Deserialize;
@@ -54,8 +53,6 @@ fn track_hash(config: &Config) -> HashMap<String, FileTypeToml> {
 pub fn toml_read()-> HashMap<String, FileTypeToml>{
 	let default = 
 r#"
-
-
 		[[file_type]]
 		name = "dir"
 		symbol = ""
@@ -101,7 +98,7 @@ r#"
 		[[file_type]]
 		name = "docker"
 		symbol = ""
-		color = "BrigthBlue"
+		color = "BrightBlue"
 		track = ["Dockerfile"]
 
 		[[file_type]]
@@ -170,7 +167,6 @@ r#"
 		color = "Blue"
 		track = [".*R","*.Rd","*.Rmd", "*.Rproj", "*.Rxs"]
 
-
 		[[file_type]]
 		name = "swift"
 		symbol = ""
@@ -212,10 +208,7 @@ r#"
 		symbol = "󰌛"
 		color = "BrightYellow"
 		track = ["*.cs"]
-
-
 "#;
-		
     let config = from_str(default).unwrap();
 	track_hash(&config)
 }
