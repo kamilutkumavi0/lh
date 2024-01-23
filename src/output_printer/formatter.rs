@@ -83,11 +83,11 @@ impl Output {
         }
         true
     }
-    fn shift( mut output_col_vec: Vec<OutputCol>) -> (Vec<OutputCol>,Vec<usize>){
+    fn shift(mut output_col_vec: Vec<OutputCol>, col_count: usize) -> (Vec<OutputCol>,Vec<usize>){
         let mut element: OutputElement;
         let mut col_max_len_vec: Vec<usize> = Vec::new();
 		if output_col_vec.len() != 0 {
-        	for i in 1..output_col_vec.len(){
+        	for i in col_count + 1..output_col_vec.len(){
             	(output_col_vec[i], element) = output_col_vec[i].clone().del();
             	output_col_vec[i-1] = output_col_vec[i-1].clone().add(element);
         	}
@@ -108,7 +108,7 @@ impl Output {
         let mut row_size = self.row_size;
         if output_col_vec.len() != 0{
             let a = output_col_vec.len()-1;
-            if output_col_vec[a].element_vec.len() <= self.row_size {
+            if output_col_vec[a].element_vec.len() < row_size {
 				output_col_vec[a] = output_col_vec[a].clone().add(element);
                 col_max_len_vec[a] = output_col_vec[a].element_max;
             } else {
@@ -122,9 +122,12 @@ impl Output {
             let new_col = new_col.add(element);
             output_col_vec.push(new_col.clone());
             col_max_len_vec.push(new_col.element_max);
+			row_size += 1;
         }
         while !Self::is_fit(&col_max_len_vec, self.term_size){
-            (output_col_vec, col_max_len_vec) = Self::shift(output_col_vec);
+			for row_count in 0..col_max_len_vec.len(){			
+	            (output_col_vec, col_max_len_vec) = Self::shift(output_col_vec, row_count);
+			}
 			// dbg!(&output_col_vec);
             row_size += 1;
         }
