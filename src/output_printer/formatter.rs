@@ -70,7 +70,7 @@ impl Output {
     pub fn new(term_size: usize)->Self{
         let col_max_len_vec:Vec<usize> = Vec::new();
         let output_col_vec: Vec<OutputCol> = Vec::new();
-        let row_size = 1;
+        let row_size = 0;
         Self {term_size, col_max_len_vec, output_col_vec, row_size }
     }
     fn is_fit(col_max_len: &Vec<usize>, term_size: usize) -> bool {
@@ -109,7 +109,7 @@ impl Output {
         if output_col_vec.len() != 0{
             let a = output_col_vec.len()-1;
             if output_col_vec[a].element_vec.len() <= self.row_size {
-                output_col_vec[a] = output_col_vec[a].clone().add(element);
+				output_col_vec[a] = output_col_vec[a].clone().add(element);
                 col_max_len_vec[a] = output_col_vec[a].element_max;
             } else {
                 let new_col = OutputCol::new();
@@ -122,9 +122,8 @@ impl Output {
             let new_col = new_col.add(element);
             output_col_vec.push(new_col.clone());
             col_max_len_vec.push(new_col.element_max);
-			row_size += 1;
         }
-        while !Self::is_fit(&col_max_len_vec, self.term_size){//Error
+        while !Self::is_fit(&col_max_len_vec, self.term_size){
             (output_col_vec, col_max_len_vec) = Self::shift(output_col_vec);
 			// dbg!(&output_col_vec);
             row_size += 1;
@@ -137,7 +136,6 @@ impl Output {
             for j in 0..self.output_col_vec.len(){
                 if i < self.output_col_vec[j].element_vec.len(){
                         let mut space = String::new();
-                        // dbg!(loc);
 						for _k in 0..loc{
                             space.push(' ');
                         }
