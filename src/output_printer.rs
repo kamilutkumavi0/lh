@@ -3,18 +3,14 @@ mod formatter;
 use formatter::{OutputElement, Output};
 use crate::parserer::Args;
 use crate::file_reader::Element;
-use colored::{Colorize, ColoredString};
-use crate::tomlread::ColorFormat;
 use terminal_size::{Width, Height, terminal_size};
 
 pub fn output_print(_parsed_args: &Args, 
 					filtered_files: Vec<Element>){
 	let mut width = 0;
-	let mut height = 0;
 	let size = terminal_size();
-	if let Some((Width(w), Height(h))) = size {
+	if let Some((Width(w), Height(_h))) = size {
 		width = w;
-		height = h;
 	} else {
     	println!("Unable to get terminal size");
 	}
