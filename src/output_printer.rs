@@ -10,15 +10,12 @@ pub fn output_print(_parsed_args: &Args,
 					filtered_files: Vec<Element>){
 	let mut width = 0;
 	let size = terminal_size();
-	/// Gets width of the terminal.
 	if let Some((Width(w), Height(_h))) = size {
 		width = w;
 	} else {
     	eprintln!("Unable to get terminal size");
 	}
-	/// Creates the tabular with width of terminal
 	let mut output = Output::new(width as usize);
-	/// Appends all filtered files in tabular as a output element.
 	for i in filtered_files{
 		let element_text = format!("{} {}  ", i.file_type.clone().unwrap().symbol, i.name);//,i.file_type.clone().unwrap().symbol
 		// println!("{}",&element_text);
