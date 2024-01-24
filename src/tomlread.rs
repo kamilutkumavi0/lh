@@ -34,7 +34,7 @@ pub struct FileTypeToml{
 
 /// All config of user in progress
 #[derive(Deserialize,Debug)]
-pub struct Config{
+pub struct Config{// General custom settings like wanna see logos or not
     pub file_type: Vec<FileTypeToml>,
 }
 
@@ -212,3 +212,4 @@ r#"
     let config = from_str(default).unwrap();
 	track_hash(&config)
 }
+// General custom settings like wanna see logos or not

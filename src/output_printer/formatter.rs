@@ -1,5 +1,8 @@
+//! This module creates a tabular structure called Output can be printable tabular format.
 use colored::Colorize;
 use crate::tomlread::ColorFormat;
+
+/// OutputElement is a structure that carries the easy access the important element for the format as a tabular lenght, color, text. 
 #[derive(Clone, Debug)]
 pub struct OutputElement{
     len: usize,
@@ -8,6 +11,7 @@ pub struct OutputElement{
 }
 
 impl OutputElement{
+    /// Creates new OutputElement.
     pub fn new(text: String, color: ColorFormat) -> Self {
         let mut len = 0;
 		for _i in text.chars(){
@@ -16,6 +20,7 @@ impl OutputElement{
         Self {len,text, color}
     }
 }
+/// OutputCol is a structure that carries every element in one col and helps the output structure can formated in right order.
 #[derive(Clone, Debug)]
 struct OutputCol {
     element_max: usize,
@@ -24,12 +29,14 @@ struct OutputCol {
 }
 
 impl OutputCol{
+    /// Creates new OutputCol
     fn new() -> Self{
         let element_max = 0;
         let len_vec = Vec::new();
         let element_vec = Vec::new();
         Self {element_max, len_vec, element_vec}
     }
+    /// Checks the all OutputElements maximum in the col so white space can be easyly formated.
     fn check_max(len_vec: &Vec<usize>)->usize{
         let mut element_max = 0;
         for i in len_vec{
@@ -39,6 +46,7 @@ impl OutputCol{
         }
         element_max
     }
+    /// Adds new OutputElement in OutputCol.
     fn add(self, output_element: OutputElement) -> Self{
         let mut element_vec = self.element_vec;
         let mut len_vec = self.len_vec;
@@ -47,6 +55,7 @@ impl OutputCol{
         let element_max = Self::check_max(&len_vec);
         Self { element_max, len_vec, element_vec}
     }
+    /// Delets first OutputElement in OutputCol.
     fn del(self) -> (Self, OutputElement) {
         let mut element_vec = self.element_vec;
         let mut len_vec = self.len_vec;
@@ -58,6 +67,7 @@ impl OutputCol{
     }
 }
 
+/// Output structer is creates a row and col matrix so can be formated and printed as a tabular.
 #[derive(Clone, Debug)]
 pub struct Output {
     term_size: usize,
@@ -67,12 +77,14 @@ pub struct Output {
 }
 
 impl Output {
+    /// Creats new Output.
     pub fn new(term_size: usize)->Self{
         let col_max_len_vec:Vec<usize> = Vec::new();
         let output_col_vec: Vec<OutputCol> = Vec::new();
         let row_size = 0;
         Self {term_size, col_max_len_vec, output_col_vec, row_size }
     }
+    /// Checks the Output element in the same row fits the widht of the terminal.
     fn is_fit(col_max_len: &Vec<usize>, term_size: usize) -> bool {
         let mut total = 0;
         for i in col_max_len{
@@ -83,6 +95,8 @@ impl Output {
         }
         true
     }
+    /// Creatse new row in first OutputCol and shifts every OutputElement one step back 
+    /// if last OutputCol has no OutputElement than delets the last OutputCol.
     fn shift(mut output_col_vec: Vec<OutputCol>, col_count: usize) -> (Vec<OutputCol>,Vec<usize>){
         let mut element: OutputElement;
         let mut col_max_len_vec: Vec<usize> = Vec::new();
@@ -100,7 +114,7 @@ impl Output {
         }
         (output_col_vec, col_max_len_vec)
     }
-
+    /// Adds new OutputElement in the Output structure. 
     pub fn add(self, element: OutputElement)->Self{
 		// dbg!(&self);
         let mut output_col_vec = self.output_col_vec;
@@ -133,6 +147,7 @@ impl Output {
         }
         Self {term_size: self.term_size, col_max_len_vec, output_col_vec, row_size: row_size}
     }
+    /// Formats and prints the Output structure as a tabular in terminal.
     pub fn print_output(self){
         for i in 0..self.output_col_vec[0].element_vec.len(){
 	        let mut loc: usize = 0;

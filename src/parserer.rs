@@ -20,9 +20,6 @@ pub struct Args {
     #[arg(long, short, value_enum,default_value_t=PType::All)]
     pub p_type: PType,
 
-    // /Select the print type of output
-    // #[arg(long, short, value_enum,default_value_t=OType::Dict)]
-    // pub o_type: OType,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -35,16 +32,6 @@ pub enum PType{
     Dir,
 }
 
-
-// #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
-// pub enum OType{
-    // / Lists output verticaly
-    // List,
-    // / Lists output horizonty
-    // Dict,
-    // / List output with block
-    // Matrix,
-// }
 
 pub fn pars_args() -> Args{
 	Args::parse()
