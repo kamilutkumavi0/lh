@@ -9,7 +9,13 @@ filter added this project.
 for the symbols.
 
 ### Install lh
-in progress
+|Package manager|command|
+|-|-|
+| cargo | cargo install lh |
 
 ## Documantation
-in progress
+[Document](https://docs.rs/lh/) reachable in in the link.
+
+## Future Plans
+[] List like output for metadata.
+[] Filter output by file types
