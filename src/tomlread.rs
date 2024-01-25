@@ -26,19 +26,22 @@ pub enum ColorFormat{
 /// Color and symbol of the file
 #[derive(Deserialize, Debug, Clone)]
 pub struct FileTypeToml{
-    // name: String,
+	// Symbol of the file .
     pub symbol: String,
+	// Formated color of the file type.
     pub color: ColorFormat,
+	// Exention tracking for the file type.
     track: Vec<String>,
 }
 
 /// All config of user in progress
 #[derive(Deserialize,Debug)]
 pub struct Config{// General custom settings like wanna see logos or not
-    pub file_type: Vec<FileTypeToml>,
+    // Configiration parser of the cli app.
+	pub file_type: Vec<FileTypeToml>,
 }
 
-///tract conf to hash table for easy to use for filtering the output.
+/// Tract conf to hash table for easy to use for filtering the output.
 fn track_hash(config: &Config) -> HashMap<String, FileTypeToml> {
 	let mut conf_hash: HashMap<String, FileTypeToml> = HashMap::new(); 
 	for file_types in &config.file_type{
