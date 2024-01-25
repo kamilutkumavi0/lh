@@ -144,6 +144,9 @@ impl Output {
 			}
 			// dbg!(&output_col_vec);
             row_size += 1;
+            if output_col_vec.len() <= 1{
+                break;
+            }
         }
         Self {term_size: self.term_size, col_max_len_vec, output_col_vec, row_size}
     }

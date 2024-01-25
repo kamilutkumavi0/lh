@@ -46,7 +46,8 @@ fn track_hash(config: &Config) -> HashMap<String, FileTypeToml> {
 	// conf_hash is a hash table for detect file extentions.
 	let mut conf_hash: HashMap<String, FileTypeToml> = HashMap::new(); 
 	
-	// All file types in config parserer 
+	// All file type's exention as a key file format as value
+	// in config parserer inserts in conf_hash.
 	for file_types in &config.file_type{
 		for tracks in &file_types.track{
 			//println!("{tracks}");
