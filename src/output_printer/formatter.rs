@@ -100,7 +100,7 @@ impl Output {
     fn shift(mut output_col_vec: Vec<OutputCol>, col_count: usize) -> (Vec<OutputCol>,Vec<usize>){
         let mut element: OutputElement;
         let mut col_max_len_vec: Vec<usize> = Vec::new();
-		if output_col_vec.len() != 0 {
+		if !output_col_vec.is_empty() {
         	for i in col_count + 1..output_col_vec.len(){
             	(output_col_vec[i], element) = output_col_vec[i].clone().del();
             	output_col_vec[i-1] = output_col_vec[i-1].clone().add(element);
@@ -120,7 +120,7 @@ impl Output {
         let mut output_col_vec = self.output_col_vec;
         let mut col_max_len_vec = self.col_max_len_vec;
         let mut row_size = self.row_size;
-        if output_col_vec.len() != 0{
+        if !output_col_vec.is_empty(){
             let a = output_col_vec.len()-1;
             if output_col_vec[a].element_vec.len() < row_size {
 				output_col_vec[a] = output_col_vec[a].clone().add(element);
@@ -145,7 +145,7 @@ impl Output {
 			// dbg!(&output_col_vec);
             row_size += 1;
         }
-        Self {term_size: self.term_size, col_max_len_vec, output_col_vec, row_size: row_size}
+        Self {term_size: self.term_size, col_max_len_vec, output_col_vec, row_size}
     }
     /// Formats and prints the Output structure as a tabular in terminal.
     pub fn print_output(self){
@@ -180,7 +180,7 @@ impl Output {
                         loc = self.output_col_vec[j].element_max - self.output_col_vec[j].len_vec[i];
                 }
             }
-            println!("");
+            println!();
         }
     }
 }

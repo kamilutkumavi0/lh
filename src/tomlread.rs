@@ -43,7 +43,10 @@ pub struct Config{// General custom settings like wanna see logos or not
 
 /// Tract conf to hash table for easy to use for filtering the output.
 fn track_hash(config: &Config) -> HashMap<String, FileTypeToml> {
+	// conf_hash is a hash table for detect file extentions.
 	let mut conf_hash: HashMap<String, FileTypeToml> = HashMap::new(); 
+	
+	// All file types in config parserer 
 	for file_types in &config.file_type{
 		for tracks in &file_types.track{
 			//println!("{tracks}");
