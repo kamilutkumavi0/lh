@@ -4,6 +4,7 @@ use formatter::{OutputElement, Output};
 use crate::parserer::Args;
 use crate::file_reader::Element;
 use terminal_size::{Width, Height, terminal_size};
+use crate::tomlread::ColorFormat;
 /// Output print is a function that takes the file reader element and makes a tabular like output element and
 /// creates a tabular structure called output push every element into output structure then prints the tabular structure.
 pub fn output_print(_parsed_args: &Args, 
@@ -17,9 +18,14 @@ pub fn output_print(_parsed_args: &Args,
 	}
 	let mut output = Output::new(width as usize);
 	for i in filtered_files{
-		let element_text = format!("{} {}  ", i.file_type.clone().unwrap().symbol, i.name);//,i.file_type.clone().unwrap().symbol
 		// println!("{}",&element_text);
-		let element = OutputElement::new(element_text, i.file_type.unwrap().color);
+		let element = match i.file_type{
+			Some(f) => {
+				let element_text = format!("{} {}  ", f.symbol, i.name);//,i.file_type.clone().unwrap().symbol
+				OutputElement::new(element_text, f.color)
+			},
+			None => OutputElement::new("Can't read".to_string(), ColorFormat::Red )
+		};
 		output = output.add(element);
 	}	
 	output.print_output();
