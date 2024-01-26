@@ -17,7 +17,7 @@ for the symbols.
 [Document](https://docs.rs/lh/) reachable in in the link.
 
 ## Future Plans
-- [ ] Customizable in linux.
-- [ ] customizable in windows.
+- [x] Customizable in linux.
+- [x] customizable in windows.
 - [ ] List like output for metadata.
 - [ ] Filter output by file types
