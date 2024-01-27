@@ -2,7 +2,9 @@
 use toml::from_str;
 use std::collections::HashMap;
 use serde_derive::Deserialize;
-
+// use std::env;
+use std::fs;
+use home::home_dir;
 ///Selection of the color of output.
 #[derive(Deserialize, Debug, Clone)]
 pub enum ColorFormat{
@@ -58,6 +60,18 @@ fn track_hash(config: &Config) -> HashMap<String, FileTypeToml> {
 }
 ///read lh.toml or uses the defaut toml file.
 pub fn toml_read()-> HashMap<String, FileTypeToml>{
+	let home_diroctory = home_dir();
+	let config: Option<String> = match home_diroctory {
+		Some(dir) => {
+			let mut new_dir = dir.as_os_str().to_str().unwrap().to_string();
+			new_dir.push_str("/.config/lh.toml");
+			match fs::read_to_string(new_dir) {
+				Ok(f) => Some(f),
+				Err(_) => None,
+			}
+		},
+			None => None,
+	};
 	let default = 
 r#"
 		[[file_type]]
@@ -216,7 +230,11 @@ r#"
 		color = "BrightYellow"
 		track = ["*.cs"]
 "#;
-    let config = from_str(default).unwrap();
+	let conf_str = match config{
+		Some(t) => t,
+		None => default.to_string(), 
+	};
+    let config = from_str(&conf_str).unwrap();
 	track_hash(&config)
 }
 // General custom settings like wanna see logos or not
