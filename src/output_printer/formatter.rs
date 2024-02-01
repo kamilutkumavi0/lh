@@ -74,15 +74,16 @@ pub struct Output {
     col_max_len_vec:Vec<usize>,
     output_col_vec: Vec<OutputCol>,
     row_size: usize,
+    one_col: bool,
 }
 
 impl Output {
     /// Creats new Output.
-    pub fn new(term_size: usize)->Self{
+    pub fn new(term_size: usize, one_col: bool)->Self{
         let col_max_len_vec:Vec<usize> = Vec::new();
         let output_col_vec: Vec<OutputCol> = Vec::new();
         let row_size = 0;
-        Self {term_size, col_max_len_vec, output_col_vec, row_size }
+        Self {term_size, col_max_len_vec, output_col_vec, row_size, one_col }
     }
     /// Checks the Output element in the same row fits the widht of the terminal.
     fn is_fit(col_max_len: &Vec<usize>, term_size: usize) -> bool {
@@ -120,23 +121,38 @@ impl Output {
         let mut output_col_vec = self.output_col_vec;
         let mut col_max_len_vec = self.col_max_len_vec;
         let mut row_size = self.row_size;
-        if !output_col_vec.is_empty(){
-            let a = output_col_vec.len()-1;
-            if output_col_vec[a].element_vec.len() < row_size {
-				output_col_vec[a] = output_col_vec[a].clone().add(element);
+        if self.one_col{
+            if !output_col_vec.is_empty(){
+                let a = output_col_vec.len()-1;
+                output_col_vec[a] = output_col_vec[a].clone().add(element);
                 col_max_len_vec[a] = output_col_vec[a].element_max;
             } else {
                 let new_col = OutputCol::new();
                 let new_col = new_col.add(element);
                 output_col_vec.push(new_col.clone());
                 col_max_len_vec.push(new_col.element_max);
+			    row_size += 1;
             }
-        } else {
-            let new_col = OutputCol::new();
-            let new_col = new_col.add(element);
-            output_col_vec.push(new_col.clone());
-            col_max_len_vec.push(new_col.element_max);
-			row_size += 1;
+        }
+        else {
+            if !output_col_vec.is_empty(){
+                let a = output_col_vec.len()-1;
+                if output_col_vec[a].element_vec.len() < row_size {
+			    	output_col_vec[a] = output_col_vec[a].clone().add(element);
+                    col_max_len_vec[a] = output_col_vec[a].element_max;
+                } else {
+                    let new_col = OutputCol::new();
+                    let new_col = new_col.add(element);
+                    output_col_vec.push(new_col.clone());
+                    col_max_len_vec.push(new_col.element_max);
+                }
+            } else {
+                let new_col = OutputCol::new();
+                let new_col = new_col.add(element);
+                output_col_vec.push(new_col.clone());
+                col_max_len_vec.push(new_col.element_max);
+			    row_size += 1;
+            }
         }
         while !Self::is_fit(&col_max_len_vec, self.term_size){
 			for row_count in 0..col_max_len_vec.len(){			
@@ -148,7 +164,7 @@ impl Output {
                 break;
             }
         }
-        Self {term_size: self.term_size, col_max_len_vec, output_col_vec, row_size}
+        Self {term_size: self.term_size, col_max_len_vec, output_col_vec, row_size, one_col: self.one_col }
     }
     /// Formats and prints the Output structure as a tabular in terminal.
     pub fn print_output(self){

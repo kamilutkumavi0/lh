@@ -7,8 +7,9 @@ use terminal_size::{Width, Height, terminal_size};
 use crate::tomlread::ColorFormat;
 /// Output print is a function that takes the file reader element and makes a tabular like output element and
 /// creates a tabular structure called output push every element into output structure then prints the tabular structure.
-pub fn output_print(_parsed_args: &Args, 
+pub fn output_print(parsed_args: &Args, 
 					filtered_files: Vec<Element>){
+	// dbg!(parsed_args.one_col);
 	let mut width = 0;
 	let size = terminal_size();
 	if let Some((Width(w), Height(_h))) = size {
@@ -16,7 +17,7 @@ pub fn output_print(_parsed_args: &Args,
 	} else {
     	eprintln!("Unable to get terminal size");
 	}
-	let mut output = Output::new(width as usize);
+	let mut output = Output::new(width as usize, parsed_args.one_col);
 	for i in filtered_files{
 		// println!("{}",&element_text);
 		let element = match i.file_type{

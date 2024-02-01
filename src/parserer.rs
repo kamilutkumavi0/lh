@@ -9,16 +9,20 @@ use clap::{Parser, ValueEnum};
 #[command(version = "0.1")]
 #[command(name = "lists diroctory")]
 pub struct Args {
-    ///Shows hiden files/folder
+    /// Shows hiden files/folder.
     #[arg(long, short='g')]
     pub hiden: bool,
-    ///Show all
+    /// Show all.
     #[arg(long, short='a')]
     pub all: bool,
 
-    ///Selects printed type of output; only dir, only file or all
+    /// Selects printed type of output; only dir, only file or all.
     #[arg(long, short, value_enum,default_value_t=PType::All)]
     pub p_type: PType,
+
+    /// One collumn output for grep.
+    #[arg(long, short='o')]
+    pub one_col: bool,
 
 }
 
