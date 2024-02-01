@@ -152,10 +152,11 @@ impl Output {
     }
     /// Formats and prints the Output structure as a tabular in terminal.
     pub fn print_output(self){
-        for i in 0..self.output_col_vec[0].element_vec.len(){
-	        let mut loc: usize = 0;
-            for j in 0..self.output_col_vec.len(){
-                if i < self.output_col_vec[j].element_vec.len(){
+        if !self.output_col_vec.is_empty(){
+            for i in 0..self.output_col_vec[0].element_vec.len(){
+	            let mut loc: usize = 0;
+                for j in 0..self.output_col_vec.len(){
+                    if i < self.output_col_vec[j].element_vec.len(){
                         let mut space = String::new();
 						for _k in 0..loc{
                             space.push(' ');
@@ -181,9 +182,10 @@ impl Output {
                         // print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.black());
 						// dbg!(&self.output_col_vec[j].len_vec[i]);
                         loc = self.output_col_vec[j].element_max - self.output_col_vec[j].len_vec[i];
+                    }
                 }
+                println!();
             }
-            println!();
         }
     }
 }
