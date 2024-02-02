@@ -30,14 +30,19 @@ impl Element{
 		let is_hiden = matches!(&name.chars().nth(0).unwrap(), '.');
 		let metadata_of_file = file.metadata().unwrap();
 		let is_file = metadata_of_file.is_file();
-		let is_dir = metadata_of_file.is_dir();
+		let mut is_dir = metadata_of_file.is_dir();
+		if !is_file && !is_dir{
+			is_dir = !is_dir;
+		}
 		//created_date
 		//modified_date
 		//access_date
 		let file_type = if conf_hash.contains_key(name){
 			Some(conf_hash.get(name).unwrap().clone())
 		} else if is_file {
-			let name_string = &name.to_string()[1..].to_string();
+			// dbg!(&name.chars());
+			let text_vec = name.chars().collect::<Vec<_>>();
+			let name_string = text_vec[1..].iter().cloned().collect::<String>();//&name.to_string()[1..].to_string();
 			let num = name_string.find('.');
 			let name_string: String = match num {
 				Some(n) => {let mut temp = String::from("*");

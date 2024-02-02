@@ -20,6 +20,7 @@ pub fn output_print(parsed_args: &Args,
 	let mut output = Output::new(width as usize, parsed_args.one_col);
 	for i in filtered_files{
 		// println!("{}",&element_text);
+		// dbg!(&i);
 		let element = match i.file_type{
 			Some(f) => {
 				let element_text = format!("{} {}  ", f.symbol, i.name);//,i.file_type.clone().unwrap().symbol
