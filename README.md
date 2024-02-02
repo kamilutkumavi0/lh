@@ -19,5 +19,5 @@ for the symbols.
 ## Future Plans
 - [x] Customizable in linux.
 - [x] customizable in windows.
-- [ ] List like output for metadata.
-- [ ] Filter output by file types
+- [ ] Bold, italic and regular options for config.
+- [ ] Filter output by file types.
