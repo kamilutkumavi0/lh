@@ -23,7 +23,10 @@ impl Element{
 	/// Takes a Dir Entry and transform as a element struct
 	fn from_dir_entry(file: DirEntry, initial_path: &str, conf_hash: &HashMap<String, FileTypeToml>) -> Self{
 		let path = file.path();
-		let name = &path.to_str().unwrap()[initial_path.len()..];
+		let name = match &path.to_str(){
+			Some(name) => &name[initial_path.len()..],
+			None => "Can't read",
+		};
 		let is_hiden = matches!(&name.chars().nth(0).unwrap(), '.');
 		let metadata_of_file = file.metadata().unwrap();
 		let is_file = metadata_of_file.is_file();
