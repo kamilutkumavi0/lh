@@ -19,5 +19,5 @@ for the symbols.
 ## Future Plans
 - [x] Customizable in linux.
 - [x] customizable in windows.
-- [ ] Bold, italic and regular options for config.
+- [x] Bold, italic and regular options for config.
 - [ ] Filter output by file types.
