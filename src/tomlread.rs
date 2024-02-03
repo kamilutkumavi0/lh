@@ -5,6 +5,15 @@ use serde_derive::Deserialize;
 // use std::env;
 use std::fs;
 use home::home_dir;
+
+/// Selection of the font format of output.
+#[derive(Deserialize, Debug, Clone)]
+pub enum FontFormat{
+ Bold,
+ Italic,
+ Regular,
+}
+
 ///Selection of the color of output.
 #[derive(Deserialize, Debug, Clone)]
 pub enum ColorFormat{
@@ -25,13 +34,16 @@ pub enum ColorFormat{
 	BrightCyan,
 	BrightWhite,
 }
+
 /// Color and symbol of the file
 #[derive(Deserialize, Debug, Clone)]
 pub struct FileTypeToml{
 	// Symbol of the file .
     pub symbol: String,
 	// Formated color of the file type.
-    pub color: ColorFormat,
+	pub color: ColorFormat,
+	// Formated font (italic, bold, regular) of the file type/
+	pub font: FontFormat,
 	// Exention tracking for the file type.
     track: Vec<String>,
 }
@@ -78,29 +90,34 @@ r#"
 		name = "dir"
 		symbol = ""
 		color = "White"
+		font = "Bold"
 		track = ["dir"]
 		
 		[[file_type]]
 		name = "default"
 		symbol = ""
 		color = "White"
+		font = "Regular"
 		track = ["default"]
 				
 		[[file_type]]
 		name = "python"
 		symbol = ""
 		color = "Yellow"
+		font = "Regular"
 		track = ["*.py", "*.pyc"]
 		
 		[[file_type]]
 		name = "git folder"
 		symbol = ""
+		font = "Bold"
 		color = "BrightRed"
 		track = [".git", ".gitignore"]
 		
 		[[file_type]]
 		name = "rust"
 		symbol = ""
+		font = "Regular"
 		color = "BrightRed"
 		track = ["*.rs"]
 		
@@ -108,126 +125,147 @@ r#"
 		name = "toml"
 		symbol = ""
 		color = "Blue"
+		font = "Regular"
 		track = ["*.toml"]
 
 		[[file_type]]
 		name = "c"
 		symbol = ""
 		color = "Blue"
+		font = "Regular"
 		track = ["*.c","*.h"]
 
 		[[file_type]]
 		name = "docker"
 		symbol = ""
 		color = "BrightBlue"
+		font = "Regular"
 		track = ["Dockerfile"]
 
 		[[file_type]]
 		name = "go"
 		symbol = "󰟓"
 		color = "BrightBlue"
+		font = "Regular"
 		track = ["*.go"]
 
 		[[file_type]]
 		name = "haskel"
 		symbol = ""
 		color = "Magenta"
+		font = "Regular"
 		track = ["*.hs"]
 
 		[[file_type]]
 		name = "java"
 		symbol = ""
 		color = "Red"
+		font = "Regular"
 		track = ["*java"]
 
 		[[file_type]]
 		name = "julia"
 		symbol = ""
 		color = "Green"
+		font = "Regular"
 		track = ["*.jl"]
 
 		[[file_type]]
 		name = "kotlin"
 		symbol = ""
 		color = "Cyan"
+		font = "Regular"
 		track = ["*.kt", "*.kts"]
 
 		[[file_type]]
 		name = "lua"
 		symbol = ""
 		color = "Blue"
+		font = "Regular"
 		track = ["*.lua"]
 
 		[[file_type]]
 		name = "ocaml"
 		symbol = ""
 		color = "BrightRed"
+		font = "Regular"
 		track = ["*.opam"]
 
 		[[file_type]]
 		name = "perl"
 		symbol = ""
 		color = "BrightBlue"
+		font = "Regular"
 		track = ["*.pl"]
 
 		[[file_type]]
 		name = "php"
 		symbol = ""
 		color = "Blue"
+		font = "Regular"
 		track = ["*.php"]
 
 		[[file_type]]
 		name = "ruby"
 		symbol = ""
 		color = "Red"
+		font = "Regular"
 		track = ["*.rb"]
 		
 		[[file_type]]
 		name = "r"
 		symbol = ""
 		color = "Blue"
+		font = "Regular"
 		track = [".*R","*.Rd","*.Rmd", "*.Rproj", "*.Rxs"]
 
 		[[file_type]]
 		name = "swift"
 		symbol = ""
 		color = "BrightRed"
+		font = "Regular"
 		track = ["*.swift"]
 
 		[[file_type]]
 		name = "zig"
 		symbol = ""
 		color = "Yellow"
+		font = "Regular"
 		track = ["*.zig"]
 
 		[[file_type]]
 		name = "javascript"
 		symbol = ""
 		color = "Yellow"
+		font = "Regular"
 		track = ["*.js"]
 
 		[[file_type]]
 		name = "html"
 		symbol = ""
 		color = "BrightCyan"
+		font = "Regular"
 		track = ["*.html"]
 
 		[[file_type]]
 		name = "css"
 		symbol = ""
 		color = "BrightYellow"
+		font = "Regular"
 		track = ["*.css"]
 
 		[[file_type]]
 		name = "C++"
 		symbol = ""
 		color = "Blue"
+		font = "Regular"
 		track = ["*.cpp"]
 
 		[[file_type]]
 		name = "C#"
 		symbol = "󰌛"
 		color = "BrightYellow"
+		font = "Regular"
 		track = ["*.cs"]
 "#;
 	let conf_str = match config{

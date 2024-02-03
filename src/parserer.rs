@@ -5,12 +5,15 @@ use clap::{Parser, ValueEnum};
 /// Simple and beautiful way to list diroctory
 #[derive(Parser, Debug)]
 #[command(name = "list_dir")]
-#[command(author = "Kamil Utku Mavi <kamilutkumavi0@gmail.com>")]
-#[command(version = "0.1")]
+#[command(author = "Kamil Utku Mavi, <kamilutkumavi0@gmail.com>")]
+#[command(version)]
+#[command(
+    help_template = "{author-with-newline} {about-section}Version: {version} \n {usage-heading} {usage} \n {all-args} {tab}"
+)]
 #[command(name = "lists diroctory")]
 pub struct Args {
     /// Shows hiden files/folder.
-    #[arg(long, short='g')]
+    #[arg(long, short='H')]
     pub hiden: bool,
     /// Show all.
     #[arg(long, short='a')]

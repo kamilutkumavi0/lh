@@ -1,6 +1,6 @@
 //! This module creates a tabular structure called Output can be printable tabular format.
 use colored::Colorize;
-use crate::tomlread::ColorFormat;
+use crate::tomlread::{ColorFormat, FontFormat};
 
 /// OutputElement is a structure that carries the easy access the important element for the format as a tabular lenght, color, text. 
 #[derive(Clone, Debug)]
@@ -8,16 +8,17 @@ pub struct OutputElement{
     len: usize,
     text: String,
 	color: ColorFormat,
+    font: FontFormat,
 }
 
 impl OutputElement{
     /// Creates new OutputElement.
-    pub fn new(text: String, color: ColorFormat) -> Self {
+    pub fn new(text: String, color: ColorFormat, font: FontFormat) -> Self {
         let mut len = 0;
 		for _i in text.chars(){
 			len += 1;
 		}
-        Self {len,text, color}
+        Self {len, text, color, font}
     }
 }
 /// OutputCol is a structure that carries every element in one col and helps the output structure can formated in right order.
@@ -178,22 +179,119 @@ impl Output {
                             space.push(' ');
                         }
 						match &self.output_col_vec[j].element_vec[i].color{
-							ColorFormat::Black => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.black());},
-							ColorFormat::Red => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.red());},
-							ColorFormat::Green => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.green());},
-							ColorFormat::Yellow => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.yellow());},
-							ColorFormat::Blue => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.blue());},
-							ColorFormat::Magenta => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.magenta());},
-							ColorFormat::Cyan => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.cyan());},
-							ColorFormat::White => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.white());},
-							ColorFormat::BrightBlack => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_black());},
-							ColorFormat::BrightRed => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_red());},
-							ColorFormat::BrightGreen => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_green());},
-							ColorFormat::BrightYellow => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_yellow());},
-							ColorFormat::BrightBlue => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_blue());},
-							ColorFormat::BrightMagenta => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_magenta());},
-							ColorFormat::BrightCyan => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_cyan());},
-							ColorFormat::BrightWhite => {print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_white());},
+							ColorFormat::Black => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular =>print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.black()) ,
+                                    FontFormat::Bold =>print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.black().bold()) ,
+                                    FontFormat::Italic =>print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.black().italic()) ,
+                                }
+
+                            },
+							ColorFormat::Red => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.red()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.red().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.red().italic()),
+                                }
+                            },
+							ColorFormat::Green => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.green()) ,
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.green().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.green().italic()),
+                                }
+                            },
+							ColorFormat::Yellow => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.yellow()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.yellow().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.yellow().italic()),
+                                }
+                            },
+							ColorFormat::Blue => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.blue()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.blue().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.blue().italic()),
+                                }
+                            },
+							ColorFormat::Magenta => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.magenta()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.magenta().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.magenta().italic()),
+                                }
+                            },
+							ColorFormat::Cyan => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.cyan()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.cyan().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.cyan().italic()),
+                                }
+                            },
+							ColorFormat::White => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.white()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.white().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.white().italic()),
+                                }
+                            },
+							ColorFormat::BrightBlack => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_black()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_black().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_black().italic()),
+                                }
+                            },
+							ColorFormat::BrightRed => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_red()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_red().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_red().italic()),
+                                }
+                            },
+							ColorFormat::BrightGreen => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_green()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_green().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_green().italic()),
+                                }
+                            },
+							ColorFormat::BrightYellow => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_yellow()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_yellow().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_yellow().italic()),
+                                }
+                            },
+							ColorFormat::BrightBlue => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_blue()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_blue().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_blue().italic()),
+                                }
+                            },
+							ColorFormat::BrightMagenta => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_magenta()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_magenta().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_magenta().italic()),
+                                }
+                            },
+							ColorFormat::BrightCyan => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_cyan()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_cyan().bold()) ,
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_cyan().italic()),
+                                }
+                            },
+							ColorFormat::BrightWhite => {
+                                match &self.output_col_vec[j].element_vec[i].font{
+                                    FontFormat::Regular => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_white()),
+                                    FontFormat::Bold => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_white().bold()),
+                                    FontFormat::Italic => print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.bright_white().italic()),
+                                }
+                            },
 						}
                         // print!("{}{}",space, &self.output_col_vec[j].element_vec[i].text.black());
 						// dbg!(&self.output_col_vec[j].len_vec[i]);
