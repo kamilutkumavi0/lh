@@ -16,6 +16,8 @@ for the symbols.
 ## Documantation
 [Document](https://docs.rs/lh/) reachable in in the link.
 
+## Flags
+![standar_all_outputs](./media/all.png)
 ## Future Plans
 - [x] Customizable in linux.
 - [x] customizable in windows.

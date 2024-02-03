@@ -161,7 +161,7 @@ r#"
 		symbol = ""
 		color = "Red"
 		font = "Regular"
-		track = ["*java"]
+		track = ["*.java"]
 
 		[[file_type]]
 		name = "julia"
@@ -217,7 +217,7 @@ r#"
 		symbol = ""
 		color = "Blue"
 		font = "Regular"
-		track = [".*R","*.Rd","*.Rmd", "*.Rproj", "*.Rxs"]
+		track = ["*.R","*.Rd","*.Rmd", "*.Rproj", "*.Rxs"]
 
 		[[file_type]]
 		name = "swift"
