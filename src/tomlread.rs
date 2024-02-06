@@ -271,7 +271,7 @@ r#"
 	let conf_str = match config{
 		Some(t) => t,
 		None => default.to_string(), 
-	}
+	};
     let config = from_str(&conf_str).unwrap();
 	track_hash(&config)
 }
