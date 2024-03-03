@@ -13,6 +13,7 @@ pub struct Element{
 	pub is_hiden: bool,
 	pub is_file: bool,
 	pub is_dir: bool,
+	// pub is_sym: bool,
 	pub file_type: Option<FileTypeToml>,
 	//created
 	//modified
