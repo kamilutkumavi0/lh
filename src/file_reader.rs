@@ -5,6 +5,10 @@ use std::fs::{self, ReadDir, DirEntry};
 use std::collections::HashMap;
 use crate::tomlread::FileTypeToml;
 use std::os::unix::fs::PermissionsExt;
+use chrono::{DateTime, Utc};
+use chrono::Datelike;
+use std::os::unix::fs::MetadataExt;
+use users::{get_user_by_uid, get_group_by_gid};
 /// Element struct collect name of the dir as String, information about hiden, file, dir as bool and
 /// file_type as a Option FileTypeToml which is going to configure bye lh.toml in the future.   
 #[derive(Debug)]
@@ -46,10 +50,14 @@ impl Element{
 			} else {
 				permisions.push('-');
 			}
-
 			second_count += 1;
 		}
-		// dbg!(permisions);
+		let modify_date: DateTime<Utc> = metadata_of_file.modified().unwrap().into();
+		// dbg!(ab.month()); month day hour:second
+		let uid = metadata_of_file.uid();
+		let gid = metadata_of_file.gid();
+		// dbg!(get_user_by_uid(uid).unwrap().name());
+		// dbg!(get_group_by_gid(gid).unwrap().name());
 		let is_file = metadata_of_file.is_file();
 		let mut is_dir = metadata_of_file.is_dir();
 		if !is_file && !is_dir{
