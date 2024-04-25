@@ -27,6 +27,9 @@ pub struct Args {
     #[arg(long, short='o')]
     pub one_col: bool,
 
+    #[arg(long, short='l')]
+    pub long: bool,
+
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]

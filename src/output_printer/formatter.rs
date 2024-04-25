@@ -76,15 +76,16 @@ pub struct Output {
     output_col_vec: Vec<OutputCol>,
     row_size: usize,
     one_col: bool,
+    long: bool,
 }
 
 impl Output {
     /// Creats new Output.
-    pub fn new(term_size: usize, one_col: bool)->Self{
+    pub fn new(term_size: usize, one_col: bool, long: bool)->Self{
         let col_max_len_vec:Vec<usize> = Vec::new();
         let output_col_vec: Vec<OutputCol> = Vec::new();
         let row_size = 0;
-        Self {term_size, col_max_len_vec, output_col_vec, row_size, one_col }
+        Self {term_size, col_max_len_vec, output_col_vec, row_size, one_col, long }
     }
     /// Checks the Output element in the same row fits the widht of the terminal.
     fn is_fit(col_max_len: &Vec<usize>, term_size: usize) -> bool {
@@ -122,7 +123,7 @@ impl Output {
         let mut output_col_vec = self.output_col_vec;
         let mut col_max_len_vec = self.col_max_len_vec;
         let mut row_size = self.row_size;
-        if self.one_col{
+        if self.one_col || self.long{
             if !output_col_vec.is_empty(){
                 let a = output_col_vec.len()-1;
                 output_col_vec[a] = output_col_vec[a].clone().add(element);
@@ -165,7 +166,7 @@ impl Output {
                 break;
             }
         }
-        Self {term_size: self.term_size, col_max_len_vec, output_col_vec, row_size, one_col: self.one_col }
+        Self {term_size: self.term_size, col_max_len_vec, output_col_vec, row_size, one_col: self.one_col, long: self.long }
     }
     /// Formats and prints the Output structure as a tabular in terminal.
     pub fn print_output(self){

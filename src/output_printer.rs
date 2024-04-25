@@ -17,14 +17,18 @@ pub fn output_print(parsed_args: &Args,
 	} else {
     	eprintln!("Unable to get terminal size");
 	}
-	let mut output = Output::new(width as usize, parsed_args.one_col);
+	let mut output = Output::new(width as usize, parsed_args.one_col, parsed_args.long);
 	for i in filtered_files{
 		// println!("{}",&element_text);
-		// dbg!(&i);
 		let element = match i.file_type{
 			Some(f) => {
-				let element_text = format!("{} {}  ", f.symbol, i.name);//,i.file_type.clone().unwrap().symbol
-				OutputElement::new(element_text, f.color, f.font)
+				if parsed_args.long{
+					let element_text = format!("{} {} {} {} {} {} ",i.permisions, i.user_name, i.group_name, i. modified, f.symbol, i.name);//,i.file_type.clone().unwrap().symbol
+					OutputElement::new(element_text, f.color, f.font)
+				} else {
+					let element_text = format!("{} {}  ", f.symbol, i.name);//,i.file_type.clone().unwrap().symbol
+					OutputElement::new(element_text, f.color, f.font)
+				}
 			},
 			None => OutputElement::new("Can't read".to_string(), ColorFormat::Red, FontFormat::Bold)
 		};

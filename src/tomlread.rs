@@ -94,6 +94,13 @@ r#"
 		track = ["dir"]
 		
 		[[file_type]]
+		name = "sym"
+		symbol = ""
+		color = "Red"
+		font = "Bold"
+		track = ["sym"]
+
+		[[file_type]]
 		name = "default"
 		symbol = ""
 		color = "White"
