@@ -7,6 +7,7 @@ use crate::tomlread::FileTypeToml;
 use std::os::unix::fs::PermissionsExt;
 use chrono::{DateTime, Utc};
 use chrono::Datelike;
+use chrono::Timelike;
 use std::os::unix::fs::MetadataExt;
 use users::{get_user_by_uid, get_group_by_gid};
 /// Element struct collect name of the dir as String, information about hiden, file, dir as bool and
@@ -21,8 +22,10 @@ pub struct Element{
 	pub file_type: Option<FileTypeToml>,
 	pub permisions: String,
 	//created
-	//modified
+	pub modified: String,
 	//access
+	pub user_name: String,
+	pub group_name: String,
 }
 
 impl Element{
@@ -54,10 +57,30 @@ impl Element{
 		}
 		let modify_date: DateTime<Utc> = metadata_of_file.modified().unwrap().into();
 		// dbg!(ab.month()); month day hour:second
+		let month_str = match modify_date.month(){
+			1 => "Jan",
+			2 => "Feb",
+			3 => "Mar",
+			4 => "Apr",
+			5 => "May",
+			6 => "Jun",
+			7 => "Jul",
+			8 => "Aug",
+			9 => "Sep",
+			10 => "Oct",
+			11 => "Nov",
+			12 => "Dec",
+			_ => "Dec"
+		};
+		let modified = format!("{} {} {}:{}", month_str, modify_date.day(), modify_date.hour(), modify_date.minute());
 		let uid = metadata_of_file.uid();
 		let gid = metadata_of_file.gid();
-		// dbg!(get_user_by_uid(uid).unwrap().name());
-		// dbg!(get_group_by_gid(gid).unwrap().name());
+		let binding = get_user_by_uid(uid).unwrap();
+		let user_name_dec= binding.name().to_str();
+		let binding = get_group_by_gid(gid).unwrap();
+		let group_name_dec = binding.name().to_str();
+		let user_name = String::from(user_name_dec.unwrap());
+		let group_name = String::from(group_name_dec.unwrap());
 		let is_file = metadata_of_file.is_file();
 		let mut is_dir = metadata_of_file.is_dir();
 		if !is_file && !is_dir{
@@ -92,7 +115,7 @@ impl Element{
 			None
 		};
 		let name = name.to_string();
-		Self{ name, is_hiden, is_file, is_dir, file_type, permisions}
+		Self{ name, is_hiden, is_file, is_dir, file_type, permisions, modified, user_name, group_name}
 	}
 	/// Takes a ReadDir argumant and send the every DirEntry in from_read_dir function and collect every element in vector
 	fn from_read_dir(files: ReadDir, initial_path: &str, conf_hash: HashMap<String, FileTypeToml>) -> Vec<Element>{

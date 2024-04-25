@@ -23,7 +23,7 @@ pub fn output_print(parsed_args: &Args,
 		let element = match i.file_type{
 			Some(f) => {
 				if parsed_args.long{
-					let element_text = format!("{} {} {}  ",i.permisions, f.symbol, i.name);//,i.file_type.clone().unwrap().symbol
+					let element_text = format!("{} {} {} {} {} {} ",i.permisions, i.user_name, i.group_name, i. modified, f.symbol, i.name);//,i.file_type.clone().unwrap().symbol
 					OutputElement::new(element_text, f.color, f.font)
 				} else {
 					let element_text = format!("{} {}  ", f.symbol, i.name);//,i.file_type.clone().unwrap().symbol
