@@ -18,7 +18,7 @@ pub struct Element{
 	pub is_hiden: bool,
 	pub is_file: bool,
 	pub is_dir: bool,
-	// pub is_sym: bool,
+	pub is_sym: bool,
 	pub file_type: Option<FileTypeToml>,
 	pub permisions: String,
 	//created
@@ -82,8 +82,9 @@ impl Element{
 		let user_name = String::from(user_name_dec.unwrap());
 		let group_name = String::from(group_name_dec.unwrap());
 		let is_file = metadata_of_file.is_file();
+		let is_sym = metadata_of_file.is_symlink();
 		let mut is_dir = metadata_of_file.is_dir();
-		if !is_file && !is_dir{
+		if !is_file && !is_dir && !is_sym{
 			is_dir = !is_dir;
 		}
 		//created_date
@@ -111,11 +112,13 @@ impl Element{
 			out
 		} else if is_dir {
 			Some(conf_hash.get("dir").unwrap().clone())
+		} else if is_sym {
+			Some(conf_hash.get("sym").unwrap().clone())
 		} else {
 			None
 		};
 		let name = name.to_string();
-		Self{ name, is_hiden, is_file, is_dir, file_type, permisions, modified, user_name, group_name}
+		Self{ name, is_hiden, is_file, is_dir, is_sym, file_type, permisions, modified, user_name, group_name}
 	}
 	/// Takes a ReadDir argumant and send the every DirEntry in from_read_dir function and collect every element in vector
 	fn from_read_dir(files: ReadDir, initial_path: &str, conf_hash: HashMap<String, FileTypeToml>) -> Vec<Element>{
