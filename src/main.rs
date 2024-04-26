@@ -7,7 +7,7 @@ use lh::tomlread::{toml_read, FileTypeToml};
 fn main() {
     let conf_hash: HashMap<String, FileTypeToml> = toml_read();
     let parsed_args = pars_args();
-    let files = get_files(conf_hash);
+    let files = get_files(conf_hash, parsed_args.path.clone());
     let filtered_files = filter(&parsed_args, files);
     output_print(&parsed_args, filtered_files);
 }

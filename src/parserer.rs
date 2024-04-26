@@ -12,6 +12,8 @@ use clap::{Parser, ValueEnum};
 )]
 #[command(name = "lists diroctory")]
 pub struct Args {
+    #[arg(default_value_t=String::from("./"))]
+    pub path: String,
     /// Shows hiden files/folder.
     #[arg(long, short='H')]
     pub hiden: bool,

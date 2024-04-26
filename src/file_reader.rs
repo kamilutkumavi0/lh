@@ -136,8 +136,7 @@ impl Element{
 }
 
 /// Takes conf_hash for following the file type and returns vector of elements
-pub fn get_files(conf_hash: HashMap<String, FileTypeToml>) -> Vec<Element> {
-	let initial_path = "./".to_string();
+pub fn get_files(conf_hash: HashMap<String, FileTypeToml>, initial_path: String) -> Vec<Element> {
 	let a: Option<ReadDir> = match fs::read_dir(&initial_path){
 		Ok(f) => Some(f),
 		Err(_) => {

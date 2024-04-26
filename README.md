@@ -18,13 +18,15 @@ for the symbols.
 
 ## Flags
 If no filtered for printed output by file type no flag output prints
-all file types. All and hiden flag filtered hiden files normal usage no hiden file --all flag prints all files
+all file types and not hiden files path input can given without flag just as input as default input ./ given. All and hiden flag filtered hiden files normal usage no hiden file --all flag prints all filesi
+--long or -l flag for long information for the files.
 --hiden flag prints only hiden files. 
 ![standar_all_outputs](./media/all.png)
 if wondiring output type is only files not dirs "--p-type file" flag manuplates file types
 ![only_files](./media/file.png)
 if wondiring output type is only dir not files --p-type dir manuplates file types
 ![only_dirs](./media/dir.png)
+
 ## Future Plans
 - [x] Customizable in linux.
 - [x] customizable in windows.
