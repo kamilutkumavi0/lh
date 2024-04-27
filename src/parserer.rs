@@ -1,7 +1,6 @@
 //! parserer module parses the user input with clap crate
 use clap::{Parser, ValueEnum};
 
-
 /// Simple and beautiful way to list diroctory
 #[derive(Parser, Debug)]
 #[command(name = "list_dir")]
@@ -15,10 +14,10 @@ pub struct Args {
     #[arg(default_value_t=String::from("./"))]
     pub path: String,
     /// Shows hiden files/folder.
-    #[arg(long, short='H')]
+    #[arg(long, short = 'H')]
     pub hiden: bool,
     /// Show all.
-    #[arg(long, short='a')]
+    #[arg(long, short = 'a')]
     pub all: bool,
 
     /// Selects printed type of output; only dir, only file or all.
@@ -26,16 +25,15 @@ pub struct Args {
     pub p_type: PType,
 
     /// One collumn output for grep.
-    #[arg(long, short='o')]
+    #[arg(long, short = 'o')]
     pub one_col: bool,
 
-    #[arg(long, short='l')]
+    #[arg(long, short = 'l')]
     pub long: bool,
-
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
-pub enum PType{
+pub enum PType {
     ///Prints  files and folders
     All,
     ///Prints only files
@@ -44,7 +42,6 @@ pub enum PType{
     Dir,
 }
 
-
-pub fn pars_args() -> Args{
-	Args::parse()
+pub fn pars_args() -> Args {
+    Args::parse()
 }

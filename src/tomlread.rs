@@ -1,91 +1,91 @@
 //! reads user configiration for prints outpu handsomely
-use toml::from_str;
-use std::collections::HashMap;
 use serde_derive::Deserialize;
+use std::collections::HashMap;
+use toml::from_str;
 // use std::env;
-use std::fs;
 use home::home_dir;
+use std::fs;
 
 /// Selection of the font format of output.
 #[derive(Deserialize, Debug, Clone)]
-pub enum FontFormat{
- Bold,
- Italic,
- Regular,
+pub enum FontFormat {
+    Bold,
+    Italic,
+    Regular,
 }
 
 ///Selection of the color of output.
 #[derive(Deserialize, Debug, Clone)]
-pub enum ColorFormat{
-	Black,
-	Red,
-	Green,
-	Yellow,
-	Blue,
-	Magenta,
-	Cyan,
-	White,
-	BrightBlack,
-	BrightRed,
-	BrightGreen,
-	BrightYellow,
-	BrightBlue,
-	BrightMagenta,
-	BrightCyan,
-	BrightWhite,
+pub enum ColorFormat {
+    Black,
+    Red,
+    Green,
+    Yellow,
+    Blue,
+    Magenta,
+    Cyan,
+    White,
+    BrightBlack,
+    BrightRed,
+    BrightGreen,
+    BrightYellow,
+    BrightBlue,
+    BrightMagenta,
+    BrightCyan,
+    BrightWhite,
 }
 
 /// Color and symbol of the file
 #[derive(Deserialize, Debug, Clone)]
-pub struct FileTypeToml{
-	// Symbol of the file .
+pub struct FileTypeToml {
+    // Symbol of the file .
     pub symbol: String,
-	// Formated color of the file type.
-	pub color: ColorFormat,
-	// Formated font (italic, bold, regular) of the file type/
-	pub font: FontFormat,
-	// Exention tracking for the file type.
+    // Formated color of the file type.
+    pub color: ColorFormat,
+    // Formated font (italic, bold, regular) of the file type/
+    pub font: FontFormat,
+    // Exention tracking for the file type.
     track: Vec<String>,
 }
 
 /// All config of user in progress
-#[derive(Deserialize,Debug)]
-pub struct Config{// General custom settings like wanna see logos or not
+#[derive(Deserialize, Debug)]
+pub struct Config {
+    // General custom settings like wanna see logos or not
     // Configiration parser of the cli app.
-	pub file_type: Vec<FileTypeToml>,
+    pub file_type: Vec<FileTypeToml>,
 }
 
 /// Tract conf to hash table for easy to use for filtering the output.
 fn track_hash(config: &Config) -> HashMap<String, FileTypeToml> {
-	// conf_hash is a hash table for detect file extentions.
-	let mut conf_hash: HashMap<String, FileTypeToml> = HashMap::new(); 
-	
-	// All file type's exention as a key file format as value
-	// in config parserer inserts in conf_hash.
-	for file_types in &config.file_type{
-		for tracks in &file_types.track{
-			//println!("{tracks}");
-			conf_hash.insert(tracks.to_string(), file_types.clone());
-		}
-	}
-	conf_hash
+    // conf_hash is a hash table for detect file extentions.
+    let mut conf_hash: HashMap<String, FileTypeToml> = HashMap::new();
+
+    // All file type's exention as a key file format as value
+    // in config parserer inserts in conf_hash.
+    for file_types in &config.file_type {
+        for tracks in &file_types.track {
+            //println!("{tracks}");
+            conf_hash.insert(tracks.to_string(), file_types.clone());
+        }
+    }
+    conf_hash
 }
 ///read lh.toml or uses the defaut toml file.
-pub fn toml_read()-> HashMap<String, FileTypeToml>{
-	let home_diroctory = home_dir();
-	let config: Option<String> = match home_diroctory {
-		Some(dir) => {
-			let mut new_dir = dir.as_os_str().to_str().unwrap().to_string();
-			new_dir.push_str("/.config/lh.toml");
-			match fs::read_to_string(new_dir) {
-				Ok(f) => Some(f),
-				Err(_) => None,
-			}
-		},
-			None => None,
-	};
-	let default = 
-r#"
+pub fn toml_read() -> HashMap<String, FileTypeToml> {
+    let home_diroctory = home_dir();
+    let config: Option<String> = match home_diroctory {
+        Some(dir) => {
+            let mut new_dir = dir.as_os_str().to_str().unwrap().to_string();
+            new_dir.push_str("/.config/lh.toml");
+            match fs::read_to_string(new_dir) {
+                Ok(f) => Some(f),
+                Err(_) => None,
+            }
+        }
+        None => None,
+    };
+    let default = r#"
 		[[file_type]]
 		name = "dir"
 		symbol = ""
@@ -275,11 +275,11 @@ r#"
 		font = "Regular"
 		track = ["*.cs"]
 "#;
-	let conf_str = match config{
-		Some(t) => t,
-		None => default.to_string(), 
-	};
+    let conf_str = match config {
+        Some(t) => t,
+        None => default.to_string(),
+    };
     let config = from_str(&conf_str).unwrap();
-	track_hash(&config)
+    track_hash(&config)
 }
 // General custom settings like wanna see logos or not
