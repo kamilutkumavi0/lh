@@ -88,12 +88,27 @@ impl Element {
         );
         let uid = metadata_of_file.uid();
         let gid = metadata_of_file.gid();
-        let binding = get_user_by_uid(uid).unwrap();
-        let user_name_dec = binding.name().to_str();
-        let binding = get_group_by_gid(gid).unwrap();
-        let group_name_dec = binding.name().to_str();
-        let user_name = String::from(user_name_dec.unwrap());
-        let group_name = String::from(group_name_dec.unwrap());
+        
+        let user_name = match get_user_by_uid(uid){
+            Some(binding) => {
+                let user_name_dec = binding.name().to_str();
+                String::from(user_name_dec.unwrap())
+            },
+            None => {
+                String::from("--")
+            }
+        };
+        
+        let group_name = match get_group_by_gid(gid){
+            Some(binding) => {
+                let group_name_dec = binding.name().to_str();
+                String::from(group_name_dec.unwrap())
+            },
+            None => {
+                String::from("--")
+            }
+        };
+        
         let is_file = metadata_of_file.is_file();
         let is_sym = metadata_of_file.is_symlink();
         let mut is_dir = metadata_of_file.is_dir();
