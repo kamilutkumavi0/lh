@@ -1,34 +1,36 @@
 # lh
-List handsomely is a diractory listing tool can (will) customizable now 
-its going to print names only but in the future of the project metadata 
-filter added this project.
+List handsomely is a customizable directory listing tool. Currently, it prints file names, but future updates will include metadata filters and more advanced features.
 
 ## Installation
 ### Prerequisites
-[Nerd Fonts](https://www.nerdfonts.com/) installed and enable 
-for the symbols.
+Ensure you have [Nerd Fonts](https://www.nerdfonts.com/) installed and enabled for the symbols.
 
 ### Install lh
-|Package manager|command|
-|-|-|
-| cargo | cargo install lh |
+| Package Manager | Command |
+|-----------------|---------|
+| cargo           | cargo install lh |
 
-## Documantation
-[Document](https://docs.rs/lh/) reachable in in the link.
+## Documentation
+Documentation is available [here](https://docs.rs/lh/).
 
 ## Flags
-If no filtered for printed output by file type no flag output prints
-all file types and not hiden files path input can given without flag just as input as default input ./ given. All and hiden flag filtered hiden files normal usage no hiden file --all flag prints all filesi
---long or -l flag for long information for the files.
---hiden flag prints only hiden files. 
-![standar_all_outputs](./media/all.png)
-if wondiring output type is only files not dirs "--p-type file" flag manuplates file types
+- If no filter is applied, the output includes all file types and excludes hidden files. The default input is `./`.
+- `--all` or `-a` flag: Prints all files, including hidden ones.
+- `--long` or `-l` flag: Provides detailed information about the files.
+- `--hidden` flag: Prints only hidden files.
+- `--p-type file` flag: Prints only files.
+- `--p-type dir` flag: Prints only directories.
+
+![standard_all_outputs](./media/all.png)
 ![only_files](./media/file.png)
-if wondiring output type is only dir not files --p-type dir manuplates file types
 ![only_dirs](./media/dir.png)
 
 ## Future Plans
-- [x] Customizable in linux.
-- [x] customizable in windows.
-- [x] Bold, italic and regular options for config.
+- [x] Customizable in Linux.
+- [x] Customizable in Windows.
+- [x] Bold, italic, and regular options for config.
 - [ ] Filter output by file types.
+- [ ] Implement search functionality.
+- [ ] Customizable output formats.
+- [ ] Advanced filtering and sorting options.
+- [ ] Recursive directory listing.
