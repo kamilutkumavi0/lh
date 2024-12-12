@@ -2,11 +2,24 @@
 use crate::file_reader::Element;
 use crate::parserer::{Args, PType};
 
+fn new_type_filter(parsed_args: &Args, file: Element, output: &mut Vec::<Element>){
+    if let Some(file_type) = &file.file_type{
+        if parsed_args.filter != ""{
+            dbg!(&file_type.name, &file_type.track);
+        } else {
+            output.push(file);
+        }
+    }
+    else {
+        output.push(file);
+    }
+}
 
 fn file_type_filter(parsed_args: &Args, file: Element, output: &mut Vec::<Element>) {
     match parsed_args.p_type {
         PType::All => {
-            output.push(file);
+            // 
+            new_type_filter(parsed_args, file, output);
         }
         PType::File => {
             if file.is_file {

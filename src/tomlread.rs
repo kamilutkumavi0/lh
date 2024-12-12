@@ -38,6 +38,8 @@ pub enum ColorFormat {
 /// Color and symbol of the file
 #[derive(Deserialize, Debug, Clone)]
 pub struct FileTypeToml {
+    // File type name
+    pub name: String,
     // Symbol of the file .
     pub symbol: String,
     // Formated color of the file type.
@@ -45,7 +47,7 @@ pub struct FileTypeToml {
     // Formated font (italic, bold, regular) of the file type/
     pub font: FontFormat,
     // Exention tracking for the file type.
-    track: Vec<String>,
+    pub track: Vec<String>,
 }
 
 /// All config of user in progress
