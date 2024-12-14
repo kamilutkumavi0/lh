@@ -1,14 +1,18 @@
 //! Prints output with handsomely
 mod formatter;
 use crate::file_reader::Element;
-use crate::parserer::Args;
+use crate::parserer::{Args, SortType};
 use crate::tomlread::{ColorFormat, FontFormat};
 use formatter::{Output, OutputElement};
 use terminal_size::{terminal_size, Height, Width};
 /// Output print is a function that takes the file reader element and makes a tabular like output element and
 /// creates a tabular structure called output push every element into output structure then prints the tabular structure.
-pub fn output_print(parsed_args: &Args, filtered_files: Vec<Element>) {
+pub fn output_print(parsed_args: &Args, mut filtered_files: Vec<Element>) {
     // dbg!(parsed_args.one_col);
+    match parsed_args.sort {
+        SortType::Name => filtered_files.sort_by(|a, b| a.name.cmp(&b.name)),
+        SortType::Size => filtered_files.sort_by(|a, b| a.size.cmp(&b.size)), 
+    }
     let mut width = 0;
     let size = terminal_size();
     if let Some((Width(w), Height(_h))) = size {
@@ -23,8 +27,8 @@ pub fn output_print(parsed_args: &Args, filtered_files: Vec<Element>) {
             Some(f) => {
                 if parsed_args.long {
                     let element_text = format!(
-                        "{} {} {} {} {} {} ",
-                        i.permisions, i.user_name, i.group_name, i.modified, f.symbol, i.name
+                        "{} {} {} {} {} {} {} ",
+                        i.permisions, i.user_name, i.group_name, i.size, i.modified, f.symbol, i.name
                     ); //,i.file_type.clone().unwrap().symbol
                     OutputElement::new(element_text, f.color, f.font)
                 } else {

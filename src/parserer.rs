@@ -23,6 +23,9 @@ pub struct Args {
     /// Selects printed type of output; only dir, only file or all.
     #[arg(long, short, value_enum,default_value_t = PType::All)]
     pub p_type: PType,
+    
+    #[arg(long, short, value_enum,default_value_t = SortType::Name)]
+    pub sort: SortType,
 
     /// One collumn output for grep.
     #[arg(long, short = 'o')]
@@ -46,6 +49,13 @@ pub enum PType {
     Dir,
 }
 
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+pub enum SortType {
+    /// Sort by name
+    Name,
+    /// Sort by Size
+    Size,
+}
 
 pub fn pars_args() -> Args {
     Args::parse()

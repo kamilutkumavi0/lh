@@ -26,6 +26,7 @@ pub struct Element {
     //access
     pub user_name: String,
     pub group_name: String,
+    pub size: u64,
 }
 
 impl Element {
@@ -43,6 +44,7 @@ impl Element {
         let is_hiden = matches!(&name.chars().nth(0).unwrap(), '.');
         let metadata_of_file = file.metadata().unwrap();
         // println!("{:b} {name}", &metadata_of_file.permissions().mode());
+        let size = metadata_of_file.len();
         let permision_of_file = format!("{:b}", &metadata_of_file.permissions().mode());
         let permisions_vec: Vec<char> = permision_of_file.chars().collect();
         let mut permisions = String::new();
@@ -158,6 +160,7 @@ impl Element {
             modified,
             user_name,
             group_name,
+            size,
         }
     }
     /// Takes a ReadDir argumant and send the every DirEntry in from_read_dir function and collect every element in vector
