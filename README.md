@@ -20,6 +20,7 @@ Documentation is available [here](https://docs.rs/lh/).
 - `--hidden` flag: Prints only hidden files.
 - `--p-type file` flag: Prints only files.
 - `--p-type dir` flag: Prints only directories.
+- `--filter` or `-f` flag: Prints filtered output.
 
 ![standard_all_outputs](./media/all.png)
 ![only_files](./media/file.png)
@@ -29,7 +30,6 @@ Documentation is available [here](https://docs.rs/lh/).
 - [x] Customizable in Linux.
 - [x] Customizable in Windows.
 - [x] Bold, italic, and regular options for config.
-- [ ] Filter output by file types.
 - [ ] Implement search functionality.
 - [ ] Customizable output formats.
 - [ ] Advanced filtering and sorting options.
