@@ -4,13 +4,14 @@ use crate::parserer::{Args, PType};
 
 fn new_type_filter(parsed_args: &Args, file: Element, output: &mut Vec::<Element>){
     if let Some(file_type) = &file.file_type{
-        if parsed_args.filter != ""{
-            dbg!(&file_type.name, &file_type.track);
+        if parsed_args.filter != "" && parsed_args.filter != "default"{
+            if parsed_args.filter == file_type.name || file_type.track.contains(&parsed_args.filter){
+                output.push(file);
+            }
         } else {
             output.push(file);
         }
-    }
-    else {
+    } else {
         output.push(file);
     }
 }
@@ -37,7 +38,6 @@ fn file_type_filter(parsed_args: &Args, file: Element, output: &mut Vec::<Elemen
 /// Takes parsed argumants end element vector filter files with argumant which user gives and return fitered element vector.
 pub fn filter(parsed_args: &Args, files: Vec<Element>) -> Vec<Element> {
     let mut output: Vec<Element> = Vec::new();
-
     for file in files {
         if parsed_args.all {
             file_type_filter(parsed_args, file, &mut output);
