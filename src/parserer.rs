@@ -31,8 +31,13 @@ pub struct Args {
     #[arg(long, short = 'o')]
     pub one_col: bool,
 
+    /// Long type explanation
     #[arg(long, short = 'l')]
     pub long: bool,
+
+    /// Recursive listing
+    #[arg(long, short, default_value_t = false)]
+    pub recursive: bool,
 
     /// Filter of type of types of files
     #[arg(long, short, default_value_t = String::new())]

@@ -12,15 +12,17 @@ use std::os::unix::fs::PermissionsExt;
 use users::{get_group_by_gid, get_user_by_uid};
 /// Element struct collect name of the dir as String, information about hiden, file, dir as bool and
 /// file_type as a Option FileTypeToml which is going to configure bye lh.toml in the future.   
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Element {
     pub name: String,
+    pub file_path: String,
     pub is_hiden: bool,
     pub is_file: bool,
     pub is_dir: bool,
     pub is_sym: bool,
     pub file_type: Option<FileTypeToml>,
     pub permisions: String,
+    pub sub_dir: Vec<Element>,
     //created
     pub modified: String,
     //access
@@ -36,6 +38,7 @@ impl Element {
         initial_path: &str,
         conf_hash: &HashMap<String, FileTypeToml>,
     ) -> Self {
+        let file_path = String::from(initial_path);
         let path = file.path();
         let name = match &path.to_str() {
             Some(name) => &name[initial_path.len()..],
@@ -148,15 +151,18 @@ impl Element {
         } else {
             None
         };
+        let sub_dir: Vec<Element> = Vec::new();
         let name = name.to_string();
         Self {
             name,
+            file_path,
             is_hiden,
             is_file,
             is_dir,
             is_sym,
             file_type,
             permisions,
+            sub_dir,
             modified,
             user_name,
             group_name,
@@ -191,9 +197,54 @@ pub fn get_files(conf_hash: HashMap<String, FileTypeToml>, initial_path: String)
             None
         }
     };
-    let output: Vec<Element> = match a {
-        Some(f) => Element::from_read_dir(f, &initial_path, conf_hash),
+    let mut output: Vec<Element> = match a {
+        Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
         None => Vec::new(),
     };
     output
+}
+
+pub fn get_files_recursive(conf_hash: HashMap<String, FileTypeToml>, initial_path: String) -> Vec<Element> {
+    let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
+        Ok(f) => Some(f),
+        Err(_) => {
+            eprintln!("Not existed path");
+            None
+        }
+    };
+    let mut output: Vec<Element> = match a {
+        Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
+        None => Vec::new(),
+    };
+    for mut i in &mut output{
+        if i.is_dir {
+            let rec_elem = get_recursive(i.clone(), initial_path.clone(), conf_hash.clone());
+            i.sub_dir.push(rec_elem)
+        }
+    }
+    output
+}
+
+fn get_recursive(mut parent_elem: Element, old_path: String, conf_hash: HashMap<String, FileTypeToml>) -> Element {
+    let initial_path = format!("{}{}/", &old_path, &parent_elem.name);
+    let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
+        Ok(f) => Some(f),
+        Err(_) => {
+            eprintln!("Not existed path");
+            None
+        }
+    };
+    let output: Vec<Element> = match a {
+        Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
+        None => Vec::new(),
+    };
+    for mut i in output {
+        if i.is_dir{
+            let rec_elem = get_recursive(i, initial_path.clone(), conf_hash.clone());
+            parent_elem.sub_dir.push(rec_elem);
+        } else {
+            parent_elem.sub_dir.push(i);
+        }
+    }
+    parent_elem
 }
