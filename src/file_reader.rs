@@ -183,7 +183,7 @@ impl Element {
             match file {
                 Ok(f) => {
                     let unfiltered = Self::from_dir_entry(f, initial_path, &conf_hash);
-                    if filter(parsed_args, &unfiltered) == true {
+                    if filter(parsed_args, &unfiltered) {
                         element_vec.push(unfiltered);
                     }
                 }

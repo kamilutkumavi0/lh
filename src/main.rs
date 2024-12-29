@@ -9,7 +9,7 @@ use std::collections::HashMap;
 //         if i.is_dir {
 //             let new_path = format!("{}{}/",path, &i.name);
 //             let new_files = get_files(conf_hash.clone(), new_path);
-            
+
 //         }
 //     }
 // }

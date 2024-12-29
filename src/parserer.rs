@@ -23,7 +23,7 @@ pub struct Args {
     /// Selects printed type of output; only dir, only file or all.
     #[arg(long, short, value_enum,default_value_t = PType::All)]
     pub p_type: PType,
-    
+
     #[arg(long, short, value_enum,default_value_t = SortType::Name)]
     pub sort: SortType,
 
