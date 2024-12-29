@@ -4,13 +4,8 @@ use crate::parserer::{Args, PType};
 
 fn new_type_filter(parsed_args: &Args, file: &Element) -> bool {
     if let Some(file_type) = &file.file_type {
-        if parsed_args.filter != "" && parsed_args.filter != "default" {
-            if parsed_args.filter == file_type.name || file_type.track.contains(&parsed_args.filter)
-            {
-                true
-            } else {
-                false
-            }
+        if !parsed_args.filter.is_empty() && parsed_args.filter != "default" {
+            parsed_args.filter == file_type.name || file_type.track.contains(&parsed_args.filter)
         } else {
             true
         }
@@ -22,20 +17,8 @@ fn new_type_filter(parsed_args: &Args, file: &Element) -> bool {
 fn file_type_filter(parsed_args: &Args, file: &Element) -> bool {
     match parsed_args.p_type {
         PType::All => new_type_filter(parsed_args, file),
-        PType::File => {
-            if file.is_file {
-                true
-            } else {
-                false
-            }
-        }
-        PType::Dir => {
-            if file.is_dir {
-                true
-            } else {
-                false
-            }
-        }
+        PType::File => file.is_file,
+        PType::Dir => file.is_dir,
     }
 }
 
