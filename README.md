@@ -32,5 +32,5 @@ Documentation is available [here](https://docs.rs/lh/).
 - [x] Bold, italic, and regular options for config.
 - [ ] Implement search functionality.
 - [ ] Customizable output formats.
-- [ ] Advanced filtering and sorting options.
-- [ ] Recursive directory listing.
+- [x] Advanced filtering and sorting options.
+- [x] Recursive directory listing.
