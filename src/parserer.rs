@@ -2,7 +2,7 @@
 use clap::{Parser, ValueEnum};
 
 /// Simple and beautiful way to list diroctory
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, Clone)]
 #[command(name = "list_dir")]
 #[command(author = "Kamil Utku Mavi, <kamilutkumavi0@gmail.com>")]
 #[command(version)]
@@ -23,7 +23,7 @@ pub struct Args {
     /// Selects printed type of output; only dir, only file or all.
     #[arg(long, short, value_enum,default_value_t = PType::All)]
     pub p_type: PType,
-    
+
     #[arg(long, short, value_enum,default_value_t = SortType::Name)]
     pub sort: SortType,
 

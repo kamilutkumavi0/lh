@@ -2,52 +2,39 @@
 use crate::file_reader::Element;
 use crate::parserer::{Args, PType};
 
-fn new_type_filter(parsed_args: &Args, file: Element, output: &mut Vec::<Element>){
-    if let Some(file_type) = &file.file_type{
-        if parsed_args.filter != "" && parsed_args.filter != "default"{
-            if parsed_args.filter == file_type.name || file_type.track.contains(&parsed_args.filter){
-                output.push(file);
-            }
+fn new_type_filter(parsed_args: &Args, file: &Element) -> bool {
+    if let Some(file_type) = &file.file_type {
+        if !parsed_args.filter.is_empty() && parsed_args.filter != "default" {
+            parsed_args.filter == file_type.name || file_type.track.contains(&parsed_args.filter)
         } else {
-            output.push(file);
+            true
         }
     } else {
-        output.push(file);
+        true
     }
 }
 
-fn file_type_filter(parsed_args: &Args, file: Element, output: &mut Vec::<Element>) {
+fn file_type_filter(parsed_args: &Args, file: &Element) -> bool {
     match parsed_args.p_type {
-        PType::All => {
-            // 
-            new_type_filter(parsed_args, file, output);
-        }
-        PType::File => {
-            if file.is_file {
-                output.push(file);
-            }
-        }
-        PType::Dir => {
-            if file.is_dir {
-                output.push(file);
-            }
-        }
+        PType::All => new_type_filter(parsed_args, file),
+        PType::File => file.is_file,
+        PType::Dir => file.is_dir,
     }
 }
 
 /// Takes parsed argumants end element vector filter files with argumant which user gives and return fitered element vector.
-pub fn filter(parsed_args: &Args, files: Vec<Element>) -> Vec<Element> {
-    let mut output: Vec<Element> = Vec::new();
-    for file in files {
-        if parsed_args.all {
-            file_type_filter(parsed_args, file, &mut output);
-        } else if parsed_args.hiden {
-            if file.is_hiden {
-                file_type_filter(parsed_args, file, &mut output);
-            }
-        } else if !(file.is_hiden) {
-            file_type_filter(parsed_args, file, &mut output);
+pub fn filter(parsed_args: &Args, file: &Element) -> bool {
+    if parsed_args.all {
+        file_type_filter(parsed_args, file)
+    } else if parsed_args.hiden {
+        if file.is_hiden {
+            file_type_filter(parsed_args, file)
+        } else {
+            false
         }
+    } else if !(file.is_hiden) {
+        file_type_filter(parsed_args, file)
+    } else {
+        false
     }
-    output
 }
