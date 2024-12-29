@@ -2,7 +2,7 @@
 use clap::{Parser, ValueEnum};
 
 /// Simple and beautiful way to list diroctory
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, Clone)]
 #[command(name = "list_dir")]
 #[command(author = "Kamil Utku Mavi, <kamilutkumavi0@gmail.com>")]
 #[command(version)]

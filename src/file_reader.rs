@@ -10,6 +10,8 @@ use std::fs::{self, DirEntry, ReadDir};
 use std::os::unix::fs::MetadataExt;
 use std::os::unix::fs::PermissionsExt;
 use users::{get_group_by_gid, get_user_by_uid};
+use crate::filter_output::filter;
+use crate::parserer::Args;
 /// Element struct collect name of the dir as String, information about hiden, file, dir as bool and
 /// file_type as a Option FileTypeToml which is going to configure bye lh.toml in the future.   
 #[derive(Debug, Clone)]
@@ -174,12 +176,16 @@ impl Element {
         files: ReadDir,
         initial_path: &str,
         conf_hash: HashMap<String, FileTypeToml>,
+        parsed_args: &Args,
     ) -> Vec<Element> {
         let mut element_vec: Vec<Element> = Vec::new();
         for file in files {
             match file {
                 Ok(f) => {
-                    element_vec.push(Self::from_dir_entry(f, initial_path, &conf_hash));
+                    let unfiltered = Self::from_dir_entry(f, initial_path, &conf_hash);
+                    if filter(parsed_args, &unfiltered) == true {
+                        element_vec.push(unfiltered);
+                    }
                 }
                 Err(_) => todo!(),
             };
@@ -189,7 +195,8 @@ impl Element {
 }
 
 /// Takes conf_hash for following the file type and returns vector of elements
-pub fn get_files(conf_hash: HashMap<String, FileTypeToml>, initial_path: String) -> Vec<Element> {
+pub fn get_files(conf_hash: HashMap<String, FileTypeToml>, parsed_args: Args) -> Vec<Element> {
+    let initial_path: String = String::from(&parsed_args.path);
     let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
         Ok(f) => Some(f),
         Err(_) => {
@@ -197,14 +204,15 @@ pub fn get_files(conf_hash: HashMap<String, FileTypeToml>, initial_path: String)
             None
         }
     };
-    let mut output: Vec<Element> = match a {
-        Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
+    let output: Vec<Element> = match a {
+        Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone(), &parsed_args),
         None => Vec::new(),
     };
     output
 }
 
-pub fn get_files_recursive(conf_hash: HashMap<String, FileTypeToml>, initial_path: String) -> Vec<Element> {
+pub fn get_files_recursive(conf_hash: HashMap<String, FileTypeToml>, parsed_args: Args) -> Vec<Element> {
+    let initial_path: String = String::from(&parsed_args.path);
     let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
         Ok(f) => Some(f),
         Err(_) => {
@@ -213,19 +221,19 @@ pub fn get_files_recursive(conf_hash: HashMap<String, FileTypeToml>, initial_pat
         }
     };
     let mut output: Vec<Element> = match a {
-        Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
+        Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone(), &parsed_args),
         None => Vec::new(),
     };
-    for mut i in &mut output{
+    for i in &mut output{
         if i.is_dir {
-            let rec_elem = get_recursive(i.clone(), initial_path.clone(), conf_hash.clone());
+            let rec_elem = get_recursive(i.clone(), initial_path.clone(), conf_hash.clone(), parsed_args.clone());
             i.sub_dir.push(rec_elem)
         }
     }
     output
 }
 
-fn get_recursive(mut parent_elem: Element, old_path: String, conf_hash: HashMap<String, FileTypeToml>) -> Element {
+fn get_recursive(mut parent_elem: Element, old_path: String, conf_hash: HashMap<String, FileTypeToml>, parsed_args: Args) -> Element {
     let initial_path = format!("{}{}/", &old_path, &parent_elem.name);
     let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
         Ok(f) => Some(f),
@@ -235,12 +243,12 @@ fn get_recursive(mut parent_elem: Element, old_path: String, conf_hash: HashMap<
         }
     };
     let output: Vec<Element> = match a {
-        Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
+        Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone(), &parsed_args),
         None => Vec::new(),
     };
-    for mut i in output {
+    for i in output {
         if i.is_dir{
-            let rec_elem = get_recursive(i, initial_path.clone(), conf_hash.clone());
+            let rec_elem = get_recursive(i, initial_path.clone(), conf_hash.clone(), parsed_args.clone());
             parent_elem.sub_dir.push(rec_elem);
         } else {
             parent_elem.sub_dir.push(i);

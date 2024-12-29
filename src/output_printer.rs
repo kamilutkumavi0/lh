@@ -45,7 +45,7 @@ pub fn output_print(parsed_args: &Args, mut filtered_files: Vec<Element>) {
     output.print_output();
 }
 
-pub fn output_print_recursive(parsed_args: &Args, mut filtered_files: Vec<Element>) {
+pub fn output_print_recursive(parsed_args: &Args, filtered_files: Vec<Element>) {
     output_print(parsed_args, filtered_files.clone());
     for i in filtered_files {
         if i.is_dir{
