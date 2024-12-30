@@ -30,7 +30,7 @@ Documentation is available [here](https://docs.rs/lh/).
 - [x] Customizable in Linux.
 - [x] Customizable in Windows.
 - [x] Bold, italic, and regular options for config.
-- [ ] Implement search functionality.
+- [x] Implement search functionality.
 - [ ] Customizable output formats.
 - [x] Advanced filtering and sorting options.
 - [x] Recursive directory listing.
