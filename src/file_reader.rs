@@ -44,7 +44,7 @@ impl Element {
             Some(name) => &name[initial_path.len()..],
             None => "Can't read",
         };
-        let file_path = format!("{}{}/",initial_path,&name);
+        let file_path = String::from(initial_path);
         let is_hiden = matches!(&name.chars().nth(0).unwrap(), '.');
         let metadata_of_file = file.metadata().unwrap();
         // println!("{:b} {name}", &metadata_of_file.permissions().mode());
