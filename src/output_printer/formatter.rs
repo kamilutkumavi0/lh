@@ -114,6 +114,9 @@ impl Output {
             long,
         }
     }
+    pub fn is_empty(&self) -> bool {
+        self.output_col_vec.is_empty()
+    }
     /// Checks the Output element in the same row fits the widht of the terminal.
     fn is_fit(col_max_len: &Vec<usize>, term_size: usize) -> bool {
         let mut total = 0;

@@ -10,7 +10,6 @@ use std::fs::{self, DirEntry, ReadDir};
 use std::os::unix::fs::MetadataExt;
 use std::os::unix::fs::PermissionsExt;
 use users::{get_group_by_gid, get_user_by_uid};
-use crate::filter_output::filter;
 use crate::parserer::Args;
 /// Element struct collect name of the dir as String, information about hiden, file, dir as bool and
 /// file_type as a Option FileTypeToml which is going to configure bye lh.toml in the future.   
@@ -40,12 +39,12 @@ impl Element {
         initial_path: &str,
         conf_hash: &HashMap<String, FileTypeToml>,
     ) -> Self {
-        let file_path = String::from(initial_path);
         let path = file.path();
         let name = match &path.to_str() {
             Some(name) => &name[initial_path.len()..],
             None => "Can't read",
         };
+        let file_path = format!("{}{}/",initial_path,&name);
         let is_hiden = matches!(&name.chars().nth(0).unwrap(), '.');
         let metadata_of_file = file.metadata().unwrap();
         // println!("{:b} {name}", &metadata_of_file.permissions().mode());
@@ -183,9 +182,7 @@ impl Element {
             match file {
                 Ok(f) => {
                     let unfiltered = Self::from_dir_entry(f, initial_path, &conf_hash);
-                    if filter(parsed_args, &unfiltered) {
                         element_vec.push(unfiltered);
-                    }
                 }
                 Err(_) => todo!(),
             };
