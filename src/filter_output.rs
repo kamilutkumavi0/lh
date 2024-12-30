@@ -1,6 +1,16 @@
 //! fiter_output filters and argumant with user inputs work in progress planing to filter can filter by time, file type etc.
 use crate::file_reader::Element;
 use crate::parserer::{Args, PType};
+fn search_filter(parsed_args: &Args, file: &Element) -> bool {
+    if parsed_args.search.is_empty(){
+        true
+    } else {
+        match file.name.rfind(&parsed_args.search){
+            Some(_) => true,
+            None => false,
+        }
+    }
+}
 
 fn new_type_filter(parsed_args: &Args, file: &Element) -> bool {
     if let Some(file_type) = &file.file_type {
@@ -28,12 +38,12 @@ pub fn filter(parsed_args: &Args, file: &Element) -> bool {
         file_type_filter(parsed_args, file)
     } else if parsed_args.hiden {
         if file.is_hiden {
-            file_type_filter(parsed_args, file)
+            file_type_filter(parsed_args, file) && search_filter(parsed_args, file)
         } else {
             false
         }
     } else if !(file.is_hiden) {
-        file_type_filter(parsed_args, file)
+        file_type_filter(parsed_args, file) && search_filter(parsed_args, file)
     } else {
         false
     }

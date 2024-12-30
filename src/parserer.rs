@@ -42,6 +42,9 @@ pub struct Args {
     /// Filter of type of types of files
     #[arg(long, short, default_value_t = String::new())]
     pub filter: String,
+    
+    #[arg(long, short = 'S', default_value_t = String::new())]
+    pub search: String,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
