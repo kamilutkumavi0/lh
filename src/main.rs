@@ -9,10 +9,10 @@ fn main() {
     let conf_hash: HashMap<String, FileTypeToml> = toml_read();
     let parsed_args = pars_args();
     if parsed_args.recursive {
-        let files = get_files_recursive(conf_hash.clone(), parsed_args.clone());
+        let files = get_files_recursive(conf_hash.clone(), parsed_args.clone()).unwrap();
         output_print_recursive(&parsed_args, files);
     } else {
-        let files = get_files(conf_hash.clone(), parsed_args.clone());
+        let files = get_files(conf_hash.clone(), parsed_args.clone()).unwrap();
         output_print(&parsed_args, files);
     }
 }

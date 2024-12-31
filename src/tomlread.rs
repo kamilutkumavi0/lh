@@ -6,6 +6,10 @@ use toml::from_str;
 use home::home_dir;
 use std::fs;
 
+// enum ConfigError{
+//     CantConnectFileSystem,
+//     TomlSyntxError,
+// }
 /// Selection of the font format of output.
 #[derive(Deserialize, Debug, Clone)]
 pub enum FontFormat {
