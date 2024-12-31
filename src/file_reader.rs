@@ -224,7 +224,8 @@ pub fn get_files_recursive(conf_hash: HashMap<String, FileTypeToml>, parsed_args
     for i in &mut output{
         if i.is_dir {
             let rec_elem = get_recursive(i.clone(), initial_path.clone(), conf_hash.clone(), parsed_args.clone());
-            i.sub_dir.push(rec_elem)
+            // dbg!(&rec_elem);
+            *i = rec_elem;
         }
     }
     output

@@ -65,6 +65,7 @@ pub fn output_print_recursive(parsed_args: &Args, filtered_files: Vec<Element>) 
     }
     for i in filtered_files {
         if i.is_dir {
+            // println!("{:?}",&i);
             output_print_recursive(parsed_args, i.sub_dir.clone());
         }
     }
