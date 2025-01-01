@@ -5,10 +5,7 @@ fn search_filter(parsed_args: &Args, file: &Element) -> bool {
     if parsed_args.search.is_empty(){
         true
     } else {
-        match file.name.rfind(&parsed_args.search){
-            Some(_) => true,
-            None => false,
-        }
+        file.name.rfind(&parsed_args.search).is_some()
     }
 }
 

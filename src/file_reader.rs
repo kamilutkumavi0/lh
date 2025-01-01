@@ -56,7 +56,7 @@ impl Element {
         let file_path = String::from(initial_path);
         let is_hiden = matches!(&name.chars().nth(0).unwrap_or(' '), '.');
         let metadata_of_file_with_wrap = file.metadata();
-        if let Err(_) =  metadata_of_file_with_wrap{
+        if metadata_of_file_with_wrap.is_err(){
             return Err(ReadError::MetadataError(file_path, name.to_string()));
         } 
         let metadata_of_file = metadata_of_file_with_wrap.unwrap();
@@ -193,15 +193,10 @@ impl Element {
         // parsed_args: &Args,
     ) -> Result<Vec<Element>, ReadError> {
         let mut element_vec: Vec<Element> = Vec::new();
-        for file in files {
-            match file {
-                Ok(f) => {
-                    let unfiltered = Self::from_dir_entry(f, initial_path, &conf_hash);
-                    if let Ok(f) =  unfiltered {
-                        element_vec.push(f);
-                    }
-                }
-                Err(_) => {},
+        for file in files.flatten() {
+            let unfiltered = Self::from_dir_entry(file, initial_path, &conf_hash);
+            if let Ok(file) =  unfiltered {
+                element_vec.push(file);
             };
         }
         Ok(element_vec)
