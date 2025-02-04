@@ -26,6 +26,49 @@ Documentation is available [here](https://docs.rs/lh/).
 ![only_files](./media/file.png)
 ![only_dirs](./media/dir.png)
 
+## Usage
+Here are some examples of how to use the `lh` command:
+
+- List all files and directories in the current directory:
+  ```
+  lh
+  ```
+
+- List all files, including hidden ones:
+  ```
+  lh --all
+  ```
+
+- List only files:
+  ```
+  lh --p-type file
+  ```
+
+- List only directories:
+  ```
+  lh --p-type dir
+  ```
+
+- Provide detailed information about the files:
+  ```
+  lh --long
+  ```
+
+- List files recursively:
+  ```
+  lh --recursive
+  ```
+
+- Filter files by a specific type:
+  ```
+  lh --filter <file_type>
+  ```
+
+- Search for files with a specific name:
+  ```
+  lh --search <file_name>
+  ```
+
 ## Future Plans
 - [x] Customizable in Linux.
 - [x] Customizable in Windows.
@@ -33,3 +76,7 @@ Documentation is available [here](https://docs.rs/lh/).
 - [x] Implement search functionality.
 - [x] Advanced filtering and sorting options.
 - [x] Recursive directory listing.
+- [ ] Add support for additional file types and extensions.
+- [ ] Improve performance for large directories.
+- [ ] Add more customization options for output formatting.
+- [ ] Implement a configuration file for user preferences.
