@@ -1,6 +1,7 @@
 //! file_reader module is reads path and metadatas of diroctory.
 //! and make every path as a Elemen struct for other elements can filter with it so user can see filtered output
 
+use crate::parserer::Args;
 use crate::tomlread::FileTypeToml;
 use chrono::Datelike;
 use chrono::Timelike;
@@ -10,15 +11,13 @@ use std::fs::{self, DirEntry, ReadDir};
 use std::os::unix::fs::MetadataExt;
 use std::os::unix::fs::PermissionsExt;
 use users::{get_group_by_gid, get_user_by_uid};
-use crate::parserer::Args;
 
 #[derive(Debug)]
-pub enum ReadError{
+pub enum ReadError {
     MetadataError(String, String),
     NotExistingPath(String),
     ConfigError,
 }
-
 
 /// Element struct collect name of the dir as String, information about hiden, file, dir as bool and
 /// file_type as a Option FileTypeToml which is going to configure bye lh.toml in the future.   
@@ -33,9 +32,7 @@ pub struct Element {
     pub file_type: Option<FileTypeToml>,
     pub permisions: String,
     pub sub_dir: Vec<Element>,
-    //created
     pub modified: String,
-    //access
     pub user_name: String,
     pub group_name: String,
     pub size: u64,
@@ -56,9 +53,9 @@ impl Element {
         let file_path = String::from(initial_path);
         let is_hiden = matches!(&name.chars().nth(0).unwrap_or(' '), '.');
         let metadata_of_file_with_wrap = file.metadata();
-        if metadata_of_file_with_wrap.is_err(){
+        if metadata_of_file_with_wrap.is_err() {
             return Err(ReadError::MetadataError(file_path, name.to_string()));
-        } 
+        }
         let metadata_of_file = metadata_of_file_with_wrap.unwrap();
         // println!("{:b} {name}", &metadata_of_file.permissions().mode());
         let size = metadata_of_file.len();
@@ -107,27 +104,23 @@ impl Element {
         );
         let uid = metadata_of_file.uid();
         let gid = metadata_of_file.gid();
-        
-        let user_name = match get_user_by_uid(uid){
+
+        let user_name = match get_user_by_uid(uid) {
             Some(binding) => {
                 let user_name_dec = binding.name().to_str();
                 String::from(user_name_dec.unwrap())
-            },
-            None => {
-                String::from("--")
             }
+            None => String::from("--"),
         };
-        
-        let group_name = match get_group_by_gid(gid){
+
+        let group_name = match get_group_by_gid(gid) {
             Some(binding) => {
                 let group_name_dec = binding.name().to_str();
                 String::from(group_name_dec.unwrap())
-            },
-            None => {
-                String::from("--")
             }
+            None => String::from("--"),
         };
-        
+
         let is_file = metadata_of_file.is_file();
         let is_sym = metadata_of_file.is_symlink();
         let mut is_dir = metadata_of_file.is_dir();
@@ -167,8 +160,7 @@ impl Element {
         };
         let sub_dir: Vec<Element> = Vec::new();
         let name = name.to_string();
-        Ok(
-        Self {
+        Ok(Self {
             name,
             file_path,
             is_hiden,
@@ -182,8 +174,7 @@ impl Element {
             user_name,
             group_name,
             size,
-        }
-        )
+        })
     }
     /// Takes a ReadDir argumant and send the every DirEntry in from_read_dir function and collect every element in vector
     fn from_read_dir(
@@ -195,7 +186,7 @@ impl Element {
         let mut element_vec: Vec<Element> = Vec::new();
         for file in files.flatten() {
             let unfiltered = Self::from_dir_entry(file, initial_path, &conf_hash);
-            if let Ok(file) =  unfiltered {
+            if let Ok(file) = unfiltered {
                 element_vec.push(file);
             };
         }
@@ -204,7 +195,10 @@ impl Element {
 }
 
 /// Takes conf_hash for following the file type and returns vector of elements
-pub fn get_files(conf_hash: HashMap<String, FileTypeToml>, parsed_args: Args) -> Result<Vec<Element>, ReadError> {
+pub fn get_files(
+    conf_hash: HashMap<String, FileTypeToml>,
+    parsed_args: Args,
+) -> Result<Vec<Element>, ReadError> {
     let initial_path: String = String::from(&parsed_args.path);
     let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
         Ok(f) => Some(f),
@@ -220,7 +214,10 @@ pub fn get_files(conf_hash: HashMap<String, FileTypeToml>, parsed_args: Args) ->
     output
 }
 
-pub fn get_files_recursive(conf_hash: HashMap<String, FileTypeToml>, parsed_args: Args) -> Result<Vec<Element>, ReadError> {
+pub fn get_files_recursive(
+    conf_hash: HashMap<String, FileTypeToml>,
+    parsed_args: Args,
+) -> Result<Vec<Element>, ReadError> {
     let initial_path: String = String::from(&parsed_args.path);
     let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
         Ok(f) => Some(f),
@@ -235,22 +232,30 @@ pub fn get_files_recursive(conf_hash: HashMap<String, FileTypeToml>, parsed_args
     };
     match output {
         Ok(mut o) => {
-            for i in &mut o{
+            for i in &mut o {
                 if i.is_dir {
-                    if let Ok(rec_elem) = get_recursive(i.clone(), initial_path.clone(), conf_hash.clone(), parsed_args.clone()){
+                    if let Ok(rec_elem) = get_recursive(
+                        i.clone(),
+                        initial_path.clone(),
+                        conf_hash.clone(),
+                        parsed_args.clone(),
+                    ) {
                         *i = rec_elem;
                     }
                 }
             }
             Ok(o)
-        },
-        Err(e) => {
-            Err(e)
-        },
+        }
+        Err(e) => Err(e),
     }
 }
 
-fn get_recursive(mut parent_elem: Element, old_path: String, conf_hash: HashMap<String, FileTypeToml>, parsed_args: Args) -> Result<Element, ReadError> {
+fn get_recursive(
+    mut parent_elem: Element,
+    old_path: String,
+    conf_hash: HashMap<String, FileTypeToml>,
+    parsed_args: Args,
+) -> Result<Element, ReadError> {
     let initial_path = format!("{}{}/", &old_path, &parent_elem.name);
     let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
         Ok(f) => Some(f),
@@ -263,11 +268,16 @@ fn get_recursive(mut parent_elem: Element, old_path: String, conf_hash: HashMap<
         Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
         None => Ok(Vec::new()),
     };
-    match output{
+    match output {
         Ok(o) => {
             for i in o {
-                if i.is_dir{
-                    if let Ok(rec_elem) = get_recursive(i, initial_path.clone(), conf_hash.clone(), parsed_args.clone()){
+                if i.is_dir {
+                    if let Ok(rec_elem) = get_recursive(
+                        i,
+                        initial_path.clone(),
+                        conf_hash.clone(),
+                        parsed_args.clone(),
+                    ) {
                         parent_elem.sub_dir.push(rec_elem);
                     }
                 } else {
@@ -275,7 +285,7 @@ fn get_recursive(mut parent_elem: Element, old_path: String, conf_hash: HashMap<
                 }
             }
             Ok(parent_elem)
-        },
-        Err(e) => Err(e)
+        }
+        Err(e) => Err(e),
     }
 }
