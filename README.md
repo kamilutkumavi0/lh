@@ -76,7 +76,8 @@ Here are some examples of how to use the `lh` command:
 - [x] Implement search functionality.
 - [x] Advanced filtering and sorting options.
 - [x] Recursive directory listing.
-- [ ] Add support for additional file types and extensions.
-- [ ] Improve performance for large directories.
-- [ ] Add more customization options for output formatting.
-- [ ] Implement a configuration file for user preferences.
+- [x] Add support for additional file types and extensions.
+- [x] Add more customization options for output formatting.
+- [ ] Theme installation from github repo.
+- [ ] Default theme correction.
+- [ ] Background color customization.
