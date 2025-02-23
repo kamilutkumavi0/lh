@@ -288,4 +288,3 @@ pub fn toml_read() -> HashMap<String, FileTypeToml> {
     let config = from_str(&conf_str).unwrap();
     track_hash(&config)
 }
-// General custom settings like wanna see logos or not
