@@ -79,5 +79,5 @@ Here are some examples of how to use the `lh` command:
 - [x] Add support for additional file types and extensions.
 - [x] Add more customization options for output formatting.
 - [ ] Theme installation from github repo.
-- [ ] Default theme correction.
+- [x] Default theme correction.
 - [ ] Background color customization.
