@@ -1,4 +1,5 @@
 //! reads user configiration for prints outpu handsomely
+mod default;
 use serde_derive::Deserialize;
 use std::collections::HashMap;
 use toml::from_str;
@@ -54,6 +55,23 @@ pub struct FileTypeToml {
     pub track: Vec<String>,
 }
 
+impl FileTypeToml {
+    pub fn new(
+        name: String,
+        symbol: String,
+        color: ColorFormat,
+        font: FontFormat,
+        track: Vec<String>,
+    ) -> Self {
+        Self {
+            name,
+            symbol,
+            color,
+            font,
+            track,
+        }
+    }
+}
 /// All config of user in progress
 #[derive(Deserialize, Debug)]
 pub struct Config {
@@ -65,14 +83,18 @@ pub struct Config {
 /// Tract conf to hash table for easy to use for filtering the output.
 fn track_hash(config: &Config) -> HashMap<String, FileTypeToml> {
     // conf_hash is a hash table for detect file extentions.
-    let mut conf_hash: HashMap<String, FileTypeToml> = HashMap::new();
+    let mut conf_hash: HashMap<String, FileTypeToml> = default::creat_default();
 
     // All file type's exention as a key file format as value
     // in config parserer inserts in conf_hash.
     for file_types in &config.file_type {
         for tracks in &file_types.track {
             //println!("{tracks}");
-            conf_hash.insert(tracks.to_string(), file_types.clone());
+            if let Some(config_type) = conf_hash.get_mut(tracks) {
+                *config_type = file_types.clone();
+            } else {
+                conf_hash.insert(tracks.to_string(), file_types.clone());
+            }
         }
     }
     conf_hash
@@ -91,200 +113,11 @@ pub fn toml_read() -> HashMap<String, FileTypeToml> {
         }
         None => None,
     };
-    let default = r#"
-		[[file_type]]
-		name = "dir"
-		symbol = ""
-		color = "White"
-		font = "Bold"
-		track = ["dir"]
-		
-		[[file_type]]
-		name = "sym"
-		symbol = ""
-		color = "Red"
-		font = "Bold"
-		track = ["sym"]
-
-		[[file_type]]
-		name = "default"
-		symbol = ""
-		color = "White"
-		font = "Regular"
-		track = ["default"]
-				
-		[[file_type]]
-		name = "python"
-		symbol = ""
-		color = "Yellow"
-		font = "Regular"
-		track = ["*.py", "*.pyc"]
-		
-		[[file_type]]
-		name = "git folder"
-		symbol = ""
-		font = "Bold"
-		color = "BrightRed"
-		track = [".git", ".gitignore"]
-		
-		[[file_type]]
-		name = "rust"
-		symbol = ""
-		font = "Regular"
-		color = "BrightRed"
-		track = ["*.rs"]
-		
-		[[file_type]]
-		name = "toml"
-		symbol = ""
-		color = "Blue"
-		font = "Regular"
-		track = ["*.toml"]
-
-		[[file_type]]
-		name = "c"
-		symbol = ""
-		color = "Blue"
-		font = "Regular"
-		track = ["*.c","*.h"]
-
-		[[file_type]]
-		name = "docker"
-		symbol = ""
-		color = "BrightBlue"
-		font = "Regular"
-		track = ["Dockerfile"]
-
-		[[file_type]]
-		name = "go"
-		symbol = "󰟓"
-		color = "BrightBlue"
-		font = "Regular"
-		track = ["*.go"]
-
-		[[file_type]]
-		name = "haskel"
-		symbol = ""
-		color = "Magenta"
-		font = "Regular"
-		track = ["*.hs"]
-
-		[[file_type]]
-		name = "java"
-		symbol = ""
-		color = "Red"
-		font = "Regular"
-		track = ["*.java"]
-
-		[[file_type]]
-		name = "julia"
-		symbol = ""
-		color = "Green"
-		font = "Regular"
-		track = ["*.jl"]
-
-		[[file_type]]
-		name = "kotlin"
-		symbol = ""
-		color = "Cyan"
-		font = "Regular"
-		track = ["*.kt", "*.kts"]
-
-		[[file_type]]
-		name = "lua"
-		symbol = ""
-		color = "Blue"
-		font = "Regular"
-		track = ["*.lua"]
-
-		[[file_type]]
-		name = "ocaml"
-		symbol = ""
-		color = "BrightRed"
-		font = "Regular"
-		track = ["*.opam"]
-
-		[[file_type]]
-		name = "perl"
-		symbol = ""
-		color = "BrightBlue"
-		font = "Regular"
-		track = ["*.pl"]
-
-		[[file_type]]
-		name = "php"
-		symbol = ""
-		color = "Blue"
-		font = "Regular"
-		track = ["*.php"]
-
-		[[file_type]]
-		name = "ruby"
-		symbol = ""
-		color = "Red"
-		font = "Regular"
-		track = ["*.rb"]
-		
-		[[file_type]]
-		name = "r"
-		symbol = ""
-		color = "Blue"
-		font = "Regular"
-		track = ["*.R","*.Rd","*.Rmd", "*.Rproj", "*.Rxs"]
-
-		[[file_type]]
-		name = "swift"
-		symbol = ""
-		color = "BrightRed"
-		font = "Regular"
-		track = ["*.swift"]
-
-		[[file_type]]
-		name = "zig"
-		symbol = ""
-		color = "Yellow"
-		font = "Regular"
-		track = ["*.zig"]
-
-		[[file_type]]
-		name = "javascript"
-		symbol = ""
-		color = "Yellow"
-		font = "Regular"
-		track = ["*.js"]
-
-		[[file_type]]
-		name = "html"
-		symbol = ""
-		color = "BrightCyan"
-		font = "Regular"
-		track = ["*.html"]
-
-		[[file_type]]
-		name = "css"
-		symbol = ""
-		color = "BrightYellow"
-		font = "Regular"
-		track = ["*.css"]
-
-		[[file_type]]
-		name = "C++"
-		symbol = ""
-		color = "Blue"
-		font = "Regular"
-		track = ["*.cpp"]
-
-		[[file_type]]
-		name = "C#"
-		symbol = "󰌛"
-		color = "BrightYellow"
-		font = "Regular"
-		track = ["*.cs"]
-"#;
-    let conf_str = match config {
-        Some(t) => t,
-        None => default.to_string(),
-    };
-    let config = from_str(&conf_str).unwrap();
-    track_hash(&config)
+    match config {
+        Some(conf_str) => match from_str(&conf_str) {
+            Ok(config) => track_hash(&config),
+            Err(_) => default::creat_default(),
+        },
+        None => default::creat_default(),
+    }
 }
