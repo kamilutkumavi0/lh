@@ -7,6 +7,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("dir"),
         String::from(""),
         ColorFormat::White,
+        None,
         FontFormat::Bold,
         vec![String::from("dir")],
     );
@@ -15,6 +16,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("sym"),
         String::from(""),
         ColorFormat::Red,
+        None,
         FontFormat::Bold,
         vec![String::from("sym")],
     );
@@ -23,6 +25,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("default"),
         String::from(""),
         ColorFormat::White,
+        None,
         FontFormat::Regular,
         vec![String::from("default")],
     );
@@ -31,6 +34,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("python"),
         String::from(""),
         ColorFormat::Yellow,
+        None,
         FontFormat::Regular,
         vec![String::from("*.py"), String::from("*.pyc")],
     );
@@ -40,6 +44,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("git folder"),
         String::from(""),
         ColorFormat::BrightRed,
+        None,
         FontFormat::Bold,
         vec![String::from(".git"), String::from(".gitignore")],
     );
@@ -49,6 +54,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("rust"),
         String::from(""),
         ColorFormat::BrightRed,
+        None,
         FontFormat::Regular,
         vec![String::from("*.rs")],
     );
@@ -57,6 +63,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("toml"),
         String::from(""),
         ColorFormat::Blue,
+        None,
         FontFormat::Regular,
         vec![String::from("*.toml")],
     );
@@ -65,6 +72,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("c"),
         String::from(""),
         ColorFormat::Blue,
+        None,
         FontFormat::Regular,
         vec![String::from("*.c"), String::from("*.h")],
     );
@@ -74,6 +82,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("docker"),
         String::from(""),
         ColorFormat::BrightBlue,
+        None,
         FontFormat::Regular,
         vec![String::from("Dockerfile")],
     );
@@ -82,6 +91,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("go"),
         String::from("󰟓"),
         ColorFormat::BrightBlue,
+        None,
         FontFormat::Regular,
         vec![String::from("*.go")],
     );
@@ -90,6 +100,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("haskel"),
         String::from(""),
         ColorFormat::Magenta,
+        None,
         FontFormat::Regular,
         vec![String::from("*.hs")],
     );
@@ -98,6 +109,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("java"),
         String::from(""),
         ColorFormat::Red,
+        None,
         FontFormat::Regular,
         vec![String::from("*.java")],
     );
@@ -106,6 +118,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("julia"),
         String::from(""),
         ColorFormat::Green,
+        None,
         FontFormat::Regular,
         vec![String::from("*.jl")],
     );
@@ -114,6 +127,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("kotlin"),
         String::from(""),
         ColorFormat::Cyan,
+        None,
         FontFormat::Regular,
         vec![String::from("*.kt"), String::from("*.kts")],
     );
@@ -123,6 +137,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("lua"),
         String::from(""),
         ColorFormat::Blue,
+        None,
         FontFormat::Regular,
         vec![String::from("*.lua")],
     );
@@ -131,6 +146,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("ocaml"),
         String::from(""),
         ColorFormat::BrightRed,
+        None,
         FontFormat::Regular,
         vec![String::from("*.opam")],
     );
@@ -139,6 +155,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("perl"),
         String::from(""),
         ColorFormat::BrightBlue,
+        None,
         FontFormat::Regular,
         vec![String::from("*.pl")],
     );
@@ -147,6 +164,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("php"),
         String::from(""),
         ColorFormat::Blue,
+        None,
         FontFormat::Regular,
         vec![String::from("*.php")],
     );
@@ -155,6 +173,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("ruby"),
         String::from(""),
         ColorFormat::Red,
+        None,
         FontFormat::Regular,
         vec![String::from("*.rb")],
     );
@@ -163,6 +182,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("r"),
         String::from(""),
         ColorFormat::Blue,
+        None,
         FontFormat::Regular,
         vec![
             String::from("*.R"),
@@ -181,6 +201,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("swift"),
         String::from(""),
         ColorFormat::BrightRed,
+        None,
         FontFormat::Regular,
         vec![String::from("*.swift")],
     );
@@ -189,6 +210,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("zig"),
         String::from(""),
         ColorFormat::Yellow,
+        None,
         FontFormat::Regular,
         vec![String::from("*.zig")],
     );
@@ -197,6 +219,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("javascript"),
         String::from(""),
         ColorFormat::Yellow,
+        None,
         FontFormat::Regular,
         vec![String::from("*.js")],
     );
@@ -205,6 +228,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("html"),
         String::from(""),
         ColorFormat::BrightCyan,
+        None,
         FontFormat::Regular,
         vec![String::from("*.html")],
     );
@@ -213,6 +237,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("css"),
         String::from(""),
         ColorFormat::BrightYellow,
+        None,
         FontFormat::Regular,
         vec![String::from("*.css")],
     );
@@ -221,6 +246,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("C++"),
         String::from(""),
         ColorFormat::Blue,
+        None,
         FontFormat::Regular,
         vec![String::from("*.cpp")],
     );
@@ -229,6 +255,7 @@ pub fn creat_default() -> HashMap<String, FileTypeToml> {
         String::from("C#"),
         String::from("󰌛"),
         ColorFormat::BrightYellow,
+        None,
         FontFormat::Regular,
         vec![String::from("*.cs")],
     );
