@@ -7,10 +7,6 @@ use toml::from_str;
 use home::home_dir;
 use std::fs;
 
-// enum ConfigError{
-//     CantConnectFileSystem,
-//     TomlSyntxError,
-// }
 /// Selection of the font format of output.
 #[derive(Deserialize, Debug, Clone)]
 pub enum FontFormat {
@@ -49,6 +45,8 @@ pub struct FileTypeToml {
     pub symbol: String,
     // Formated color of the file type.
     pub color: ColorFormat,
+    // Formated background color of the file type.
+    pub bg_color: Option<ColorFormat>,
     // Formated font (italic, bold, regular) of the file type/
     pub font: FontFormat,
     // Exention tracking for the file type.
@@ -60,6 +58,7 @@ impl FileTypeToml {
         name: String,
         symbol: String,
         color: ColorFormat,
+        bg_color: Option<ColorFormat>,
         font: FontFormat,
         track: Vec<String>,
     ) -> Self {
@@ -67,6 +66,7 @@ impl FileTypeToml {
             name,
             symbol,
             color,
+            bg_color,
             font,
             track,
         }
