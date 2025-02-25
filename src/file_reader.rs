@@ -236,8 +236,8 @@ pub fn get_color_test(conf_hash: HashMap<String, FileTypeToml>) -> Vec<Element> 
         } else if i.0 == "dir" {
             output.push(Element::new(i.0, false, true, false, Some(i.1)));
         } else {
-            let new_name = if i.0.chars().nth(0) == Some('*') {
-                format!("{}{}", i.1.name.clone(), i.0[1..].to_string())
+            let new_name = if i.0.starts_with('*') {
+                format!("{}{}", i.1.name.clone(), &i.0[1..])
             } else {
                 i.0
             };
