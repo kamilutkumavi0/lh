@@ -81,4 +81,4 @@ Here are some examples of how to use the `lh` command:
 - [ ] Theme installation from github repo.
 - [x] Default theme correction.
 - [x] Background color customization.
-- [ ] Color test
+- [x] Color test
