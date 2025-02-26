@@ -39,6 +39,38 @@ pub struct Element {
 }
 
 impl Element {
+    /// Creats new dir
+    fn new(
+        name: String,
+        is_file: bool,
+        is_dir: bool,
+        is_sym: bool,
+        file_type: Option<FileTypeToml>,
+    ) -> Self {
+        let file_path: String = "/home".to_string();
+        let sub_dir: Vec<Element> = Vec::new();
+        let permisions: String = "rwxrwxrwx".to_string();
+        let modified: String = "Jan 1 00:00".to_string();
+        let user_name: String = "Test".to_string();
+        let group_name: String = "Test".to_string();
+        let size: u64 = 1;
+        let is_hiden: bool = false;
+        Self {
+            name,
+            file_path,
+            is_hiden,
+            is_file,
+            is_dir,
+            is_sym,
+            file_type,
+            permisions,
+            sub_dir,
+            modified,
+            user_name,
+            group_name,
+            size,
+        }
+    }
     /// Takes a Dir Entry and transform as a element struct
     fn from_dir_entry(
         file: DirEntry,
@@ -194,6 +226,26 @@ impl Element {
     }
 }
 
+/// Test color func
+pub fn get_color_test(conf_hash: HashMap<String, FileTypeToml>) -> Vec<Element> {
+    let mut output: Vec<Element> = Vec::new();
+    for i in conf_hash {
+        // new(name: String, is_file: bool, is_dir: bool, is_sym: bool, file_type: Option<FileTypeToml>)
+        if i.0 == "sym" {
+            output.push(Element::new(i.0, true, false, true, Some(i.1)));
+        } else if i.0 == "dir" {
+            output.push(Element::new(i.0, false, true, false, Some(i.1)));
+        } else {
+            let new_name = if i.0.starts_with('*') {
+                format!("{}{}", i.1.name.clone(), &i.0[1..])
+            } else {
+                i.0
+            };
+            output.push(Element::new(new_name, true, false, false, Some(i.1)));
+        }
+    }
+    output
+}
 /// Takes conf_hash for following the file type and returns vector of elements
 pub fn get_files(
     conf_hash: HashMap<String, FileTypeToml>,
