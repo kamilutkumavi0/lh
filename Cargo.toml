@@ -1,8 +1,8 @@
 [package]
 name = "lh"
 authors = ["Kamil Utku Mavi <kamilutkumavi0@gmail.com>"]
-version = "0.6.0"
-edition = "2021"
+version = "1.0.0"
+edition = "2024"
 description = "List handsomely customizable ls command work in progress"
 readme = "README.md"
 repository = "https://github.com/kamilutkumavi0/lh"

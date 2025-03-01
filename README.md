@@ -21,6 +21,10 @@ Documentation is available [here](https://docs.rs/lh/).
 - `--p-type file` flag: Prints only files.
 - `--p-type dir` flag: Prints only directories.
 - `--filter` or `-f` flag: Prints filtered output.
+- `--one-col` or `-o` flag: Prints not like tables like list.
+- `--sort` or `-s` flag: changes the sort type name or size.
+- `--recursive` or `-r` flag: Recursively lists.
+-  `--search` or `-S` flag: searchs the key in the list.
 
 ![standard_all_outputs](./media/all.png)
 ![only_files](./media/file.png)
