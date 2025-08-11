@@ -1,4 +1,4 @@
-//! file_reader module is reads path and metadatas of diroctory.
+//! file_reader module is reads path and metadatas of directory.
 //! and make every path as a Elemen struct for other elements can filter with it so user can see filtered output
 
 use crate::parserer::Args;
@@ -19,18 +19,18 @@ pub enum ReadError {
     ConfigError,
 }
 
-/// Element struct collect name of the dir as String, information about hiden, file, dir as bool and
+/// Element struct collect name of the dir as String, information about hidden, file, dir as bool and
 /// file_type as a Option FileTypeToml which is going to configure bye lh.toml in the future.   
 #[derive(Debug, Clone)]
 pub struct Element {
     pub name: String,
     pub file_path: String,
-    pub is_hiden: bool,
+    pub is_hidden: bool,
     pub is_file: bool,
     pub is_dir: bool,
     pub is_sym: bool,
     pub file_type: Option<FileTypeToml>,
-    pub permisions: String,
+    pub permissions: String,
     pub sub_dir: Vec<Element>,
     pub modified: String,
     pub user_name: String,
@@ -49,21 +49,21 @@ impl Element {
     ) -> Self {
         let file_path: String = "/home".to_string();
         let sub_dir: Vec<Element> = Vec::new();
-        let permisions: String = "rwxrwxrwx".to_string();
+        let permissions: String = "rwxrwxrwx".to_string();
         let modified: String = "Jan 1 00:00".to_string();
         let user_name: String = "Test".to_string();
         let group_name: String = "Test".to_string();
         let size: u64 = 1;
-        let is_hiden: bool = false;
+        let is_hidden: bool = false;
         Self {
             name,
             file_path,
-            is_hiden,
+            is_hidden,
             is_file,
             is_dir,
             is_sym,
             file_type,
-            permisions,
+            permissions,
             sub_dir,
             modified,
             user_name,
@@ -83,7 +83,7 @@ impl Element {
             None => "Can't read",
         };
         let file_path = String::from(initial_path);
-        let is_hiden = matches!(&name.chars().nth(0).unwrap_or(' '), '.');
+        let is_hidden = matches!(&name.chars().nth(0).unwrap_or(' '), '.');
         let metadata_of_file_with_wrap = file.metadata();
         if metadata_of_file_with_wrap.is_err() {
             return Err(ReadError::MetadataError(file_path, name.to_string()));
@@ -91,23 +91,23 @@ impl Element {
         let metadata_of_file = metadata_of_file_with_wrap.unwrap();
         // println!("{:b} {name}", &metadata_of_file.permissions().mode());
         let size = metadata_of_file.len();
-        let permision_of_file = format!("{:b}", &metadata_of_file.permissions().mode());
-        let permisions_vec: Vec<char> = permision_of_file.chars().collect();
-        let mut permisions = String::new();
-        for (count, item) in permisions_vec
+        let permission_of_file = format!("{:b}", &metadata_of_file.permissions().mode());
+        let permissions_vec: Vec<char> = permission_of_file.chars().collect();
+        let mut permissions = String::new();
+        for (count, item) in permissions_vec
             .iter()
-            .take(permision_of_file.len())
-            .skip(permision_of_file.len() - 9)
+            .take(permission_of_file.len())
+            .skip(permission_of_file.len() - 9)
             .enumerate()
         {
             if *item == '1' && count % 3 == 0 {
-                permisions.push('r');
+                permissions.push('r');
             } else if *item == '1' && count % 3 == 1 {
-                permisions.push('w');
+                permissions.push('w');
             } else if *item == '1' && count % 3 == 2 {
-                permisions.push('x');
+                permissions.push('x');
             } else {
-                permisions.push('-');
+                permissions.push('-');
             }
         }
         let modify_date: DateTime<Utc> = metadata_of_file.modified().unwrap().into();
@@ -194,12 +194,12 @@ impl Element {
         Ok(Self {
             name,
             file_path,
-            is_hiden,
+            is_hidden,
             is_file,
             is_dir,
             is_sym,
             file_type,
-            permisions,
+            permissions,
             sub_dir,
             modified,
             user_name,

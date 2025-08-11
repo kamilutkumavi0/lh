@@ -33,13 +33,13 @@ fn file_type_filter(parsed_args: &Args, file: &Element) -> bool {
 pub fn filter(parsed_args: &Args, file: &Element) -> bool {
     if parsed_args.all {
         file_type_filter(parsed_args, file)
-    } else if parsed_args.hiden {
-        if file.is_hiden {
+    } else if parsed_args.hidden {
+        if file.is_hidden {
             file_type_filter(parsed_args, file) && search_filter(parsed_args, file)
         } else {
             false
         }
-    } else if !(file.is_hiden) {
+    } else if !(file.is_hidden) {
         file_type_filter(parsed_args, file) && search_filter(parsed_args, file)
     } else {
         false

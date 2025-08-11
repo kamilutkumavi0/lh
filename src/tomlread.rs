@@ -101,8 +101,8 @@ fn track_hash(config: &Config) -> HashMap<String, FileTypeToml> {
 }
 ///read lh.toml or uses the defaut toml file.
 pub fn toml_read() -> HashMap<String, FileTypeToml> {
-    let home_diroctory = home_dir();
-    let config: Option<String> = match home_diroctory {
+    let home_directory = home_dir();
+    let config: Option<String> = match home_directory {
         Some(dir) => {
             let mut new_dir = dir.as_os_str().to_str().unwrap().to_string();
             new_dir.push_str("/.config/lh.toml");
