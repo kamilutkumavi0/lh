@@ -15,7 +15,7 @@ fn main() {
         match get_files_recursive(conf_hash.clone(), parsed_args.clone()) {
             Ok(files) => output_print_recursive(&parsed_args, files),
             Err(e) => {
-                eprintln!("Error reading directory: {:?}", e);
+                eprintln!("Error reading directory: {e:?}");
                 std::process::exit(1);
             }
         }
@@ -23,7 +23,7 @@ fn main() {
         match get_files(conf_hash.clone(), parsed_args.clone()) {
             Ok(files) => output_print(&parsed_args, files),
             Err(e) => {
-                eprintln!("Error reading directory: {:?}", e);
+                eprintln!("Error reading directory: {e:?}");
                 std::process::exit(1);
             }
         }
