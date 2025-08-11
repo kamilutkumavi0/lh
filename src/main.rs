@@ -12,10 +12,20 @@ fn main() {
         let files = get_color_test(conf_hash.clone());
         output_print(&parsed_args, files);
     } else if parsed_args.recursive {
-        let files = get_files_recursive(conf_hash.clone(), parsed_args.clone()).unwrap();
-        output_print_recursive(&parsed_args, files);
+        match get_files_recursive(conf_hash.clone(), parsed_args.clone()) {
+            Ok(files) => output_print_recursive(&parsed_args, files),
+            Err(e) => {
+                eprintln!("Error reading directory: {:?}", e);
+                std::process::exit(1);
+            }
+        }
     } else {
-        let files = get_files(conf_hash.clone(), parsed_args.clone()).unwrap();
-        output_print(&parsed_args, files);
+        match get_files(conf_hash.clone(), parsed_args.clone()) {
+            Ok(files) => output_print(&parsed_args, files),
+            Err(e) => {
+                eprintln!("Error reading directory: {:?}", e);
+                std::process::exit(1);
+            }
+        }
     }
 }

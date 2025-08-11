@@ -1,5 +1,8 @@
-//! file_reader module is reads path and metadatas of directory.
-//! and make every path as a Elemen struct for other elements can filter with it so user can see filtered output
+//! File reader module for reading directory paths and metadata.
+//! 
+//! This module converts file system entries into `Element` structs that can be
+//! filtered and displayed according to user preferences. It handles cross-platform
+//! differences in file permissions and ownership information.
 
 use crate::parserer::Args;
 use crate::tomlread::FileTypeToml;
@@ -20,29 +23,48 @@ use std::os::windows::fs::MetadataExt;
 #[cfg(unix)]
 use users::{get_group_by_gid, get_user_by_uid};
 
+/// Errors that can occur when reading directory contents.
 #[derive(Debug)]
 pub enum ReadError {
+    /// Error reading file metadata with file path and name
     MetadataError(String, String),
+    /// The specified path does not exist
     NotExistingPath(String),
+    /// Configuration file error
     ConfigError,
 }
 
-/// Element struct collect name of the dir as String, information about hidden, file, dir as bool and
-/// file_type as a Option FileTypeToml which is going to configure bye lh.toml in the future.   
+/// Represents a file system element (file, directory, or symbolic link).
+/// 
+/// This struct contains all the metadata needed for displaying and filtering
+/// directory contents, including permissions, ownership, and file type information.
 #[derive(Debug, Clone)]
 pub struct Element {
+    /// The name of the file or directory
     pub name: String,
+    /// The full path to the file or directory
     pub file_path: String,
+    /// Whether this is a hidden file (starts with '.')
     pub is_hidden: bool,
+    /// Whether this is a regular file
     pub is_file: bool,
+    /// Whether this is a directory
     pub is_dir: bool,
+    /// Whether this is a symbolic link
     pub is_sym: bool,
+    /// Optional file type configuration for styling
     pub file_type: Option<FileTypeToml>,
+    /// String representation of file permissions (e.g., "rwxr-xr-x")
     pub permissions: String,
+    /// Subdirectories (used for recursive listing)
     pub sub_dir: Vec<Element>,
+    /// Last modified date as formatted string
     pub modified: String,
+    /// Owner username
     pub user_name: String,
+    /// Group name
     pub group_name: String,
+    /// File size in bytes
     pub size: u64,
 }
 
@@ -266,7 +288,16 @@ impl Element {
     }
 }
 
-/// Test color func
+/// Creates a test vector of elements for color testing.
+/// 
+/// This function generates sample elements for each configured file type
+/// to help users preview color schemes and styling options.
+/// 
+/// # Arguments
+/// * `conf_hash` - Configuration map containing file type styling information
+/// 
+/// # Returns
+/// A vector of test elements representing different file types
 pub fn get_color_test(conf_hash: HashMap<String, FileTypeToml>) -> Vec<Element> {
     let mut output: Vec<Element> = Vec::new();
     for i in conf_hash {
@@ -286,7 +317,25 @@ pub fn get_color_test(conf_hash: HashMap<String, FileTypeToml>) -> Vec<Element> 
     }
     output
 }
-/// Takes conf_hash for following the file type and returns vector of elements
+/// Reads directory contents and returns them as a vector of Element structs.
+/// 
+/// This function reads the specified directory path and converts each entry
+/// into an Element with metadata including permissions, ownership, and styling.
+/// 
+/// # Arguments
+/// * `conf_hash` - Configuration map for file type styling
+/// * `parsed_args` - Command line arguments containing the path and options
+/// 
+/// # Returns
+/// * `Ok(Vec<Element>)` - Vector of directory elements on success
+/// * `Err(ReadError)` - Error if directory cannot be read or accessed
+/// 
+/// # Examples
+/// ```ignore
+/// let config = toml_read();
+/// let args = pars_args();
+/// let files = get_files(config, args)?;
+/// ```
 pub fn get_files(
     conf_hash: HashMap<String, FileTypeToml>,
     parsed_args: Args,
@@ -300,6 +349,22 @@ pub fn get_files(
     output
 }
 
+/// Reads directory contents recursively and returns them as a vector of Element structs.
+/// 
+/// This function works like `get_files` but also recursively reads subdirectories,
+/// populating the `sub_dir` field of directory elements with their contents.
+/// 
+/// # Arguments
+/// * `conf_hash` - Configuration map for file type styling
+/// * `parsed_args` - Command line arguments containing the path and options
+/// 
+/// # Returns
+/// * `Ok(Vec<Element>)` - Vector of directory elements with subdirectories populated
+/// * `Err(ReadError)` - Error if directory cannot be read or accessed
+/// 
+/// # Note
+/// This function may be slow for large directory trees and could potentially
+/// consume significant memory for deep hierarchies.
 pub fn get_files_recursive(
     conf_hash: HashMap<String, FileTypeToml>,
     parsed_args: Args,

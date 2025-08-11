@@ -1,7 +1,14 @@
-//! parserer module parses the user input with clap crate
+//! Command line argument parser module.
+//! 
+//! This module uses the `clap` crate to define and parse command line arguments
+//! for the `lh` directory listing tool. It provides all the configuration
+//! options needed to control the behavior and output formatting.
 use clap::{Parser, ValueEnum};
 
-/// Simple and beautiful way to list directory
+/// Command line arguments for the `lh` directory listing tool.
+/// 
+/// This struct defines all available command line options and their default values.
+/// It uses `clap` derive macros to automatically generate argument parsing code.
 #[derive(Parser, Debug, Clone)]
 #[command(name = "list_dir")]
 #[command(author = "Kamil Utku Mavi, <kamilutkumavi0@gmail.com>")]
