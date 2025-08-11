@@ -8,8 +8,16 @@ use chrono::Timelike;
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
 use std::fs::{self, DirEntry, ReadDir};
+
+#[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
+#[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
+
+#[cfg(windows)]
+use std::os::windows::fs::MetadataExt;
+
+#[cfg(unix)]
 use users::{get_group_by_gid, get_user_by_uid};
 
 #[derive(Debug)]
@@ -39,8 +47,8 @@ pub struct Element {
 }
 
 impl Element {
-    /// Creats new dir
-    fn new(
+    /// Creates new dir
+    pub fn new(
         name: String,
         is_file: bool,
         is_dir: bool,
@@ -91,25 +99,45 @@ impl Element {
         let metadata_of_file = metadata_of_file_with_wrap.unwrap();
         // println!("{:b} {name}", &metadata_of_file.permissions().mode());
         let size = metadata_of_file.len();
-        let permission_of_file = format!("{:b}", &metadata_of_file.permissions().mode());
-        let permissions_vec: Vec<char> = permission_of_file.chars().collect();
-        let mut permissions = String::new();
-        for (count, item) in permissions_vec
-            .iter()
-            .take(permission_of_file.len())
-            .skip(permission_of_file.len() - 9)
-            .enumerate()
-        {
-            if *item == '1' && count % 3 == 0 {
-                permissions.push('r');
-            } else if *item == '1' && count % 3 == 1 {
-                permissions.push('w');
-            } else if *item == '1' && count % 3 == 2 {
-                permissions.push('x');
-            } else {
-                permissions.push('-');
+        
+        // Handle permissions in a cross-platform way
+        #[cfg(unix)]
+        let permissions = {
+            let permission_of_file = format!("{:b}", &metadata_of_file.permissions().mode());
+            let permissions_vec: Vec<char> = permission_of_file.chars().collect();
+            let mut perms = String::new();
+            for (count, item) in permissions_vec
+                .iter()
+                .take(permission_of_file.len())
+                .skip(permission_of_file.len() - 9)
+                .enumerate()
+            {
+                if *item == '1' && count % 3 == 0 {
+                    perms.push('r');
+                } else if *item == '1' && count % 3 == 1 {
+                    perms.push('w');
+                } else if *item == '1' && count % 3 == 2 {
+                    perms.push('x');
+                } else {
+                    perms.push('-');
+                }
             }
-        }
+            perms
+        };
+        
+        #[cfg(windows)]
+        let permissions = {
+            // On Windows, we can check read-only attribute
+            let readonly = metadata_of_file.permissions().readonly();
+            if readonly {
+                "r--r--r--".to_string()
+            } else {
+                "rw-rw-rw-".to_string()
+            }
+        };
+        
+        #[cfg(not(any(unix, windows)))]
+        let permissions = "rwxrwxrwx".to_string();
         let modify_date: DateTime<Utc> = metadata_of_file.modified().unwrap().into();
         // dbg!(ab.month()); month day hour:second
         let month_str = match modify_date.month() {
@@ -134,23 +162,36 @@ impl Element {
             modify_date.hour(),
             modify_date.minute()
         );
-        let uid = metadata_of_file.uid();
-        let gid = metadata_of_file.gid();
+        
+        // Handle user/group information in a cross-platform way
+        #[cfg(unix)]
+        let (user_name, group_name) = {
+            let uid = metadata_of_file.uid();
+            let gid = metadata_of_file.gid();
 
-        let user_name = match get_user_by_uid(uid) {
-            Some(binding) => {
-                let user_name_dec = binding.name().to_str();
-                String::from(user_name_dec.unwrap())
-            }
-            None => String::from("--"),
+            let user_name = match get_user_by_uid(uid) {
+                Some(binding) => {
+                    let user_name_dec = binding.name().to_str();
+                    String::from(user_name_dec.unwrap())
+                }
+                None => String::from("--"),
+            };
+
+            let group_name = match get_group_by_gid(gid) {
+                Some(binding) => {
+                    let group_name_dec = binding.name().to_str();
+                    String::from(group_name_dec.unwrap())
+                }
+                None => String::from("--"),
+            };
+            
+            (user_name, group_name)
         };
-
-        let group_name = match get_group_by_gid(gid) {
-            Some(binding) => {
-                let group_name_dec = binding.name().to_str();
-                String::from(group_name_dec.unwrap())
-            }
-            None => String::from("--"),
+        
+        #[cfg(not(unix))]
+        let (user_name, group_name) = {
+            // On non-Unix systems, we can't easily get user/group names
+            (String::from("user"), String::from("group"))
         };
 
         let is_file = metadata_of_file.is_file();
