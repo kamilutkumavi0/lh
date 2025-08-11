@@ -106,10 +106,7 @@ pub fn toml_read() -> HashMap<String, FileTypeToml> {
         Some(dir) => {
             let mut new_dir = dir.as_os_str().to_str().unwrap().to_string();
             new_dir.push_str("/.config/lh.toml");
-            match fs::read_to_string(new_dir) {
-                Ok(f) => Some(f),
-                Err(_) => None,
-            }
+            fs::read_to_string(new_dir).ok()
         }
         None => None,
     };

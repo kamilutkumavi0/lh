@@ -177,12 +177,11 @@ impl Element {
                 }
                 None => "default".to_string(),
             };
-            let out = if conf_hash.contains_key(&name_string) {
+            if conf_hash.contains_key(&name_string) {
                 Some(conf_hash.get(&name_string).unwrap().clone())
             } else {
                 Some(conf_hash.get("default").unwrap().clone())
-            };
-            out
+            }
         } else if is_dir {
             Some(conf_hash.get("dir").unwrap().clone())
         } else if is_sym {
@@ -252,13 +251,7 @@ pub fn get_files(
     parsed_args: Args,
 ) -> Result<Vec<Element>, ReadError> {
     let initial_path: String = String::from(&parsed_args.path);
-    let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
-        Ok(f) => Some(f),
-        Err(_) => {
-            // eprintln!("{} Not a existing path", &initial_path);
-            None
-        }
-    };
+    let a: Option<ReadDir> = fs::read_dir(&initial_path).ok();
     let output: Result<Vec<Element>, ReadError> = match a {
         Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
         None => Ok(Vec::new()),
@@ -271,13 +264,7 @@ pub fn get_files_recursive(
     parsed_args: Args,
 ) -> Result<Vec<Element>, ReadError> {
     let initial_path: String = String::from(&parsed_args.path);
-    let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
-        Ok(f) => Some(f),
-        Err(_) => {
-            // eprintln!("{} Not a existing path", &initial_path);
-            None
-        }
-    };
+    let a: Option<ReadDir> = fs::read_dir(&initial_path).ok();
     let output: Result<Vec<Element>, ReadError> = match a {
         Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
         None => Ok(Vec::new()),
@@ -309,13 +296,7 @@ fn get_recursive(
     parsed_args: Args,
 ) -> Result<Element, ReadError> {
     let initial_path = format!("{}{}/", &old_path, &parent_elem.name);
-    let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
-        Ok(f) => Some(f),
-        Err(_) => {
-            // eprintln!("{} Not a existing path", &initial_path);
-            None
-        }
-    };
+    let a: Option<ReadDir> = fs::read_dir(&initial_path).ok();
     let output: Result<Vec<Element>, ReadError> = match a {
         Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
         None => Ok(Vec::new()),
