@@ -29,7 +29,7 @@ pub fn output_printer(parsed_args: &Args, mut filtered_files: Vec<Element>) -> O
                     if parsed_args.long {
                         let element_text = format!(
                             "{} {} {} {} {} {} {} ",
-                            i.permisions,
+                            i.permissions,
                             i.user_name,
                             i.group_name,
                             i.size,

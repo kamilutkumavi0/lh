@@ -1,5 +1,8 @@
-//! file_reader module is reads path and metadatas of diroctory.
-//! and make every path as a Elemen struct for other elements can filter with it so user can see filtered output
+//! File reader module for reading directory paths and metadata.
+//! 
+//! This module converts file system entries into `Element` structs that can be
+//! filtered and displayed according to user preferences. It handles cross-platform
+//! differences in file permissions and ownership information.
 
 use crate::parserer::Args;
 use crate::tomlread::FileTypeToml;
@@ -8,39 +11,66 @@ use chrono::Timelike;
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
 use std::fs::{self, DirEntry, ReadDir};
+
+#[cfg(unix)]
 use std::os::unix::fs::MetadataExt;
+#[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
+
+#[cfg(windows)]
+use std::os::windows::fs::MetadataExt;
+
+#[cfg(unix)]
 use users::{get_group_by_gid, get_user_by_uid};
 
+/// Errors that can occur when reading directory contents.
 #[derive(Debug)]
 pub enum ReadError {
+    /// Error reading file metadata with file path and name
     MetadataError(String, String),
+    /// The specified path does not exist
     NotExistingPath(String),
+    /// Configuration file error
     ConfigError,
 }
 
-/// Element struct collect name of the dir as String, information about hiden, file, dir as bool and
-/// file_type as a Option FileTypeToml which is going to configure bye lh.toml in the future.   
+/// Represents a file system element (file, directory, or symbolic link).
+/// 
+/// This struct contains all the metadata needed for displaying and filtering
+/// directory contents, including permissions, ownership, and file type information.
 #[derive(Debug, Clone)]
 pub struct Element {
+    /// The name of the file or directory
     pub name: String,
+    /// The full path to the file or directory
     pub file_path: String,
-    pub is_hiden: bool,
+    /// Whether this is a hidden file (starts with '.')
+    pub is_hidden: bool,
+    /// Whether this is a regular file
     pub is_file: bool,
+    /// Whether this is a directory
     pub is_dir: bool,
+    /// Whether this is a symbolic link
     pub is_sym: bool,
+    /// Optional file type configuration for styling
     pub file_type: Option<FileTypeToml>,
-    pub permisions: String,
+    /// String representation of file permissions (e.g., "rwxr-xr-x")
+    pub permissions: String,
+    /// Subdirectories (used for recursive listing)
     pub sub_dir: Vec<Element>,
+    /// Last modified date as formatted string
     pub modified: String,
+    /// Owner username
     pub user_name: String,
+    /// Group name
     pub group_name: String,
+    /// File size in bytes
     pub size: u64,
 }
 
 impl Element {
-    /// Creats new dir
-    fn new(
+    /// Creates new dir
+    pub fn new(
         name: String,
         is_file: bool,
         is_dir: bool,
@@ -49,21 +79,21 @@ impl Element {
     ) -> Self {
         let file_path: String = "/home".to_string();
         let sub_dir: Vec<Element> = Vec::new();
-        let permisions: String = "rwxrwxrwx".to_string();
+        let permissions: String = "rwxrwxrwx".to_string();
         let modified: String = "Jan 1 00:00".to_string();
         let user_name: String = "Test".to_string();
         let group_name: String = "Test".to_string();
         let size: u64 = 1;
-        let is_hiden: bool = false;
+        let is_hidden: bool = false;
         Self {
             name,
             file_path,
-            is_hiden,
+            is_hidden,
             is_file,
             is_dir,
             is_sym,
             file_type,
-            permisions,
+            permissions,
             sub_dir,
             modified,
             user_name,
@@ -83,7 +113,7 @@ impl Element {
             None => "Can't read",
         };
         let file_path = String::from(initial_path);
-        let is_hiden = matches!(&name.chars().nth(0).unwrap_or(' '), '.');
+        let is_hidden = matches!(&name.chars().nth(0).unwrap_or(' '), '.');
         let metadata_of_file_with_wrap = file.metadata();
         if metadata_of_file_with_wrap.is_err() {
             return Err(ReadError::MetadataError(file_path, name.to_string()));
@@ -91,25 +121,45 @@ impl Element {
         let metadata_of_file = metadata_of_file_with_wrap.unwrap();
         // println!("{:b} {name}", &metadata_of_file.permissions().mode());
         let size = metadata_of_file.len();
-        let permision_of_file = format!("{:b}", &metadata_of_file.permissions().mode());
-        let permisions_vec: Vec<char> = permision_of_file.chars().collect();
-        let mut permisions = String::new();
-        for (count, item) in permisions_vec
-            .iter()
-            .take(permision_of_file.len())
-            .skip(permision_of_file.len() - 9)
-            .enumerate()
-        {
-            if *item == '1' && count % 3 == 0 {
-                permisions.push('r');
-            } else if *item == '1' && count % 3 == 1 {
-                permisions.push('w');
-            } else if *item == '1' && count % 3 == 2 {
-                permisions.push('x');
-            } else {
-                permisions.push('-');
+        
+        // Handle permissions in a cross-platform way
+        #[cfg(unix)]
+        let permissions = {
+            let permission_of_file = format!("{:b}", &metadata_of_file.permissions().mode());
+            let permissions_vec: Vec<char> = permission_of_file.chars().collect();
+            let mut perms = String::new();
+            for (count, item) in permissions_vec
+                .iter()
+                .take(permission_of_file.len())
+                .skip(permission_of_file.len() - 9)
+                .enumerate()
+            {
+                if *item == '1' && count % 3 == 0 {
+                    perms.push('r');
+                } else if *item == '1' && count % 3 == 1 {
+                    perms.push('w');
+                } else if *item == '1' && count % 3 == 2 {
+                    perms.push('x');
+                } else {
+                    perms.push('-');
+                }
             }
-        }
+            perms
+        };
+        
+        #[cfg(windows)]
+        let permissions = {
+            // On Windows, we can check read-only attribute
+            let readonly = metadata_of_file.permissions().readonly();
+            if readonly {
+                "r--r--r--".to_string()
+            } else {
+                "rw-rw-rw-".to_string()
+            }
+        };
+        
+        #[cfg(not(any(unix, windows)))]
+        let permissions = "rwxrwxrwx".to_string();
         let modify_date: DateTime<Utc> = metadata_of_file.modified().unwrap().into();
         // dbg!(ab.month()); month day hour:second
         let month_str = match modify_date.month() {
@@ -134,23 +184,36 @@ impl Element {
             modify_date.hour(),
             modify_date.minute()
         );
-        let uid = metadata_of_file.uid();
-        let gid = metadata_of_file.gid();
+        
+        // Handle user/group information in a cross-platform way
+        #[cfg(unix)]
+        let (user_name, group_name) = {
+            let uid = metadata_of_file.uid();
+            let gid = metadata_of_file.gid();
 
-        let user_name = match get_user_by_uid(uid) {
-            Some(binding) => {
-                let user_name_dec = binding.name().to_str();
-                String::from(user_name_dec.unwrap())
-            }
-            None => String::from("--"),
+            let user_name = match get_user_by_uid(uid) {
+                Some(binding) => {
+                    let user_name_dec = binding.name().to_str();
+                    String::from(user_name_dec.unwrap())
+                }
+                None => String::from("--"),
+            };
+
+            let group_name = match get_group_by_gid(gid) {
+                Some(binding) => {
+                    let group_name_dec = binding.name().to_str();
+                    String::from(group_name_dec.unwrap())
+                }
+                None => String::from("--"),
+            };
+            
+            (user_name, group_name)
         };
-
-        let group_name = match get_group_by_gid(gid) {
-            Some(binding) => {
-                let group_name_dec = binding.name().to_str();
-                String::from(group_name_dec.unwrap())
-            }
-            None => String::from("--"),
+        
+        #[cfg(not(unix))]
+        let (user_name, group_name) = {
+            // On non-Unix systems, we can't easily get user/group names
+            (String::from("user"), String::from("group"))
         };
 
         let is_file = metadata_of_file.is_file();
@@ -177,12 +240,11 @@ impl Element {
                 }
                 None => "default".to_string(),
             };
-            let out = if conf_hash.contains_key(&name_string) {
+            if conf_hash.contains_key(&name_string) {
                 Some(conf_hash.get(&name_string).unwrap().clone())
             } else {
                 Some(conf_hash.get("default").unwrap().clone())
-            };
-            out
+            }
         } else if is_dir {
             Some(conf_hash.get("dir").unwrap().clone())
         } else if is_sym {
@@ -195,12 +257,12 @@ impl Element {
         Ok(Self {
             name,
             file_path,
-            is_hiden,
+            is_hidden,
             is_file,
             is_dir,
             is_sym,
             file_type,
-            permisions,
+            permissions,
             sub_dir,
             modified,
             user_name,
@@ -226,7 +288,16 @@ impl Element {
     }
 }
 
-/// Test color func
+/// Creates a test vector of elements for color testing.
+/// 
+/// This function generates sample elements for each configured file type
+/// to help users preview color schemes and styling options.
+/// 
+/// # Arguments
+/// * `conf_hash` - Configuration map containing file type styling information
+/// 
+/// # Returns
+/// A vector of test elements representing different file types
 pub fn get_color_test(conf_hash: HashMap<String, FileTypeToml>) -> Vec<Element> {
     let mut output: Vec<Element> = Vec::new();
     for i in conf_hash {
@@ -246,19 +317,31 @@ pub fn get_color_test(conf_hash: HashMap<String, FileTypeToml>) -> Vec<Element> 
     }
     output
 }
-/// Takes conf_hash for following the file type and returns vector of elements
+/// Reads directory contents and returns them as a vector of Element structs.
+/// 
+/// This function reads the specified directory path and converts each entry
+/// into an Element with metadata including permissions, ownership, and styling.
+/// 
+/// # Arguments
+/// * `conf_hash` - Configuration map for file type styling
+/// * `parsed_args` - Command line arguments containing the path and options
+/// 
+/// # Returns
+/// * `Ok(Vec<Element>)` - Vector of directory elements on success
+/// * `Err(ReadError)` - Error if directory cannot be read or accessed
+/// 
+/// # Examples
+/// ```ignore
+/// let config = toml_read();
+/// let args = pars_args();
+/// let files = get_files(config, args)?;
+/// ```
 pub fn get_files(
     conf_hash: HashMap<String, FileTypeToml>,
     parsed_args: Args,
 ) -> Result<Vec<Element>, ReadError> {
     let initial_path: String = String::from(&parsed_args.path);
-    let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
-        Ok(f) => Some(f),
-        Err(_) => {
-            // eprintln!("{} Not a existing path", &initial_path);
-            None
-        }
-    };
+    let a: Option<ReadDir> = fs::read_dir(&initial_path).ok();
     let output: Result<Vec<Element>, ReadError> = match a {
         Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
         None => Ok(Vec::new()),
@@ -266,18 +349,28 @@ pub fn get_files(
     output
 }
 
+/// Reads directory contents recursively and returns them as a vector of Element structs.
+/// 
+/// This function works like `get_files` but also recursively reads subdirectories,
+/// populating the `sub_dir` field of directory elements with their contents.
+/// 
+/// # Arguments
+/// * `conf_hash` - Configuration map for file type styling
+/// * `parsed_args` - Command line arguments containing the path and options
+/// 
+/// # Returns
+/// * `Ok(Vec<Element>)` - Vector of directory elements with subdirectories populated
+/// * `Err(ReadError)` - Error if directory cannot be read or accessed
+/// 
+/// # Note
+/// This function may be slow for large directory trees and could potentially
+/// consume significant memory for deep hierarchies.
 pub fn get_files_recursive(
     conf_hash: HashMap<String, FileTypeToml>,
     parsed_args: Args,
 ) -> Result<Vec<Element>, ReadError> {
     let initial_path: String = String::from(&parsed_args.path);
-    let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
-        Ok(f) => Some(f),
-        Err(_) => {
-            // eprintln!("{} Not a existing path", &initial_path);
-            None
-        }
-    };
+    let a: Option<ReadDir> = fs::read_dir(&initial_path).ok();
     let output: Result<Vec<Element>, ReadError> = match a {
         Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
         None => Ok(Vec::new()),
@@ -309,13 +402,7 @@ fn get_recursive(
     parsed_args: Args,
 ) -> Result<Element, ReadError> {
     let initial_path = format!("{}{}/", &old_path, &parent_elem.name);
-    let a: Option<ReadDir> = match fs::read_dir(&initial_path) {
-        Ok(f) => Some(f),
-        Err(_) => {
-            // eprintln!("{} Not a existing path", &initial_path);
-            None
-        }
-    };
+    let a: Option<ReadDir> = fs::read_dir(&initial_path).ok();
     let output: Result<Vec<Element>, ReadError> = match a {
         Some(f) => Element::from_read_dir(f, &initial_path, conf_hash.clone()),
         None => Ok(Vec::new()),
